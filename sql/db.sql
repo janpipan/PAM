@@ -1,7 +1,7 @@
 CREATE TABLE Images(
-    Id INT AUTO_INCREMENT,
+    Id INT GENERATED ALWAYS AS IDENTITY,
     Title VARCHAR(255),
-    Description TEXT,
+    Description CLOB,
     Keywords VARCHAR(255),
     Author VARCHAR(255),
     Creator VARCHAR(255),
