@@ -29,10 +29,8 @@ public class ContextListener implements ServletContextListener, HttpSessionListe
     public void contextInitialized(ServletContextEvent event) {
         try {
             ServletContext context = event.getServletContext();
-            
-            ImageModel imageModel = new ImageModel(em,utx);
-            
-            context.setAttribute("imageModel", imageModel);
+            context.setAttribute("test", "test");
+            context.setAttribute("imageModel", new ImageModel(em,utx));
             
         } catch (Exception e) {
             e.printStackTrace();

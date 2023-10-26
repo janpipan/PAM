@@ -24,10 +24,11 @@ public class ImageModel {
         this.em = em;
     }
     
-    public void addImage(Image img){
-        em.getTransaction().begin();
+    public void addImage(Image img) throws Exception{
+        utx.begin();
         em.persist(img);
-        em.getTransaction().commit();
+        em.flush();
+        utx.commit();
     }
     
     public List<Image> retrieveAll(){

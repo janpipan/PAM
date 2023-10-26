@@ -15,6 +15,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import model.ImageModel;
 
 /**
  *
@@ -33,7 +39,6 @@ public class registerImg extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
- 
     
     protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
@@ -49,22 +54,54 @@ public class registerImg extends HttpServlet {
         }
     }
     
-    protected void processPost(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
+    protected void processPost(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException, Exception {
         
+            
         ServletContext context = getServletContext();
+        
+        
+        String title = req.getParameter("title");
+        String description = req.getParameter("description");
+        String keywords = req.getParameter("keywords");
+        String author = req.getParameter("author");
+        String creator = req.getParameter("creator");
+        String filename = req.getParameter("filename");
+        Boolean encrypted = "on".equals(req.getParameter("encrypt"));
+        
+        SimpleDateFormat dateFormat = new SimpleDateFormat("mm-dd-yyyy");
+        Date capturingDate;
+        try {
+            capturingDate = dateFormat.parse(req.getParameter("capturingdata"));
+        } catch (ParseException e) {
+            capturingDate = new Date();
+        }
         Image img = new Image();
-        context.getAttribute("imageModel").addImage(img);
+        img.setTitle(title);
+        img.setDescription(description);
+        img.setKeywords(keywords);
+        img.setAuthor(author);
+        img.setCreator(creator);
+        img.setFilename(filename);
+        img.setCapturingdata(capturingDate);
+        img.setEncrypted(encrypted);
+        
+        
+        ImageModel imgModel = (ImageModel) context.getAttribute("imageModel");
+        //System.out.println(context.getAttribute("test"));
+        imgModel.addImage(img);
         
         try {
-            ViewManager.nextView(request, response, "/views/menu.jsp");
+            ViewManager.nextView(req, res, "/views/menu.jsp");
         } catch (Exception e) {
             e.printStackTrace();
-            RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+            RequestDispatcher dispatcher = req.getRequestDispatcher("/error.jsp");
             if (dispatcher != null) {
-                dispatcher.forward(request,response);
+                dispatcher.forward(req, res);
             }
         }
+        
+        
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
@@ -92,7 +129,11 @@ public class registerImg extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processPost(request, response);
+        try {
+            processPost(request, response);
+        } catch (Exception ex) {
+            Logger.getLogger(registerImg.class.getName()).log(Level.SEVERE, null, ex);
+        }
     }
 
     /**

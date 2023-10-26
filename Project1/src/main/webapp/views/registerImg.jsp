@@ -14,6 +14,7 @@
     <body>
         <h1>Upload image</h1>
         <form action="registerImg" method="post" enctpye="multipart/form-data">
+            <!--
             <label for="title">Title: </label>
             <input type="text" id="title" name="title" required><br>
             <label for="description">Description: </label>
@@ -25,12 +26,31 @@
             <label for="creator">Creator: </label>
             <input type="text" id="creator" name="creator" required><br>
             <label for="captureDate">Capture date: </label>
-            <input type="date" id="captureDate" name="captureDate" required><br>
+            <input type="date" id="capturingdata" name="capturingdata" required><br>
             <label for="fileName">File name: </label>
             <input type="text" id="fileName" name="fileName" required><br>
             <label for="encrypt">Encrypt: </label>
             <input type="checkbox" id="encrypt" name="encrypt" required><br>
             <input type="file" name="file" required><br>
+            <button type="submit">Upload</button>
+            --->
+            <label for="title">Title: </label>
+            <input type="text" id="title" name="title" ><br>
+            <label for="description">Description: </label>
+            <input type="text" id="description" name="description" ><br>
+            <label for="keywords">Keywords: </label>
+            <input type="text" id="keywords" name="keywords" ><br>
+            <label for="author">Author: </label>
+            <input type="text" id="author" name="author" ><br>
+            <label for="creator">Creator: </label>
+            <input type="text" id="creator" name="creator" ><br>
+            <label for="captureDate">Capture date: </label>
+            <input type="date" id="capturingdata" name="capturingdata" ><br>
+            <label for="fileName">File name: </label>
+            <input type="text" id="fileName" name="fileName" ><br>
+            <label for="encrypt">Encrypt: </label>
+            <input type="checkbox" id="encrypt" name="encrypt" ><br>
+            <input type="file" name="file" ><br>
             <button type="submit">Upload</button>
         </form>
     </body>

@@ -66,8 +66,20 @@ public class Image implements Serializable {
     private String filename;
     @Column(name = "ENCRYPTED")
     private Boolean encrypted;
-
-    public Image() {
+    
+    /*
+    public Image(String title, String description, String keywords, String author, String creator, Date capturingdata, String filename, Boolean encrypted) {
+        this.title = title;
+        this.description = description;
+        this.keywords = keywords;
+        this.author = author;
+        this.creator = creator;
+        this.capturingdata = capturingdata;
+        this.filename = filename;
+        this.encrypted = encrypted;
+    }
+    */
+    public Image(){
     }
 
     public Image(Integer id) {
