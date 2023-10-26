@@ -35,7 +35,8 @@ import javax.persistence.TemporalType;
     @NamedQuery(name = "Image.findByCapturingdata", query = "SELECT i FROM Image i WHERE i.capturingdata = :capturingdata"),
     @NamedQuery(name = "Image.findByStoragedata", query = "SELECT i FROM Image i WHERE i.storagedata = :storagedata"),
     @NamedQuery(name = "Image.findByFilename", query = "SELECT i FROM Image i WHERE i.filename = :filename"),
-    @NamedQuery(name = "Image.findByEncrypted", query = "SELECT i FROM Image i WHERE i.encrypted = :encrypted")})
+    @NamedQuery(name = "Image.findByEncrypted", query = "SELECT i FROM Image i WHERE i.encrypted = :encrypted"),
+    @NamedQuery(name = "Image.insertImg", query = "INSERT INTO Image i VALUES i.title = :title, i.description = :description, i.keywords= :keywords, i.author= :author, i.creator = :creator, i.capturingdata = :capturingdata, i.filename = :filename, i.encrypted = :encrypted")})
 public class Image implements Serializable {
 
     private static final long serialVersionUID = 1L;

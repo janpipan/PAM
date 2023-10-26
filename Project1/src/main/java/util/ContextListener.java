@@ -32,6 +32,8 @@ public class ContextListener implements ServletContextListener, HttpSessionListe
             
             ImageModel imageModel = new ImageModel(em,utx);
             
+            context.setAttribute("imageModel", imageModel);
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

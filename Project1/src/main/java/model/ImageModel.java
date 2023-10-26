@@ -24,6 +24,12 @@ public class ImageModel {
         this.em = em;
     }
     
+    public void addImage(Image img){
+        em.getTransaction().begin();
+        em.persist(img);
+        em.getTransaction().commit();
+    }
+    
     public List<Image> retrieveAll(){
         Query q = em.createNamedQuery("Image.findAll");
         return q.getResultList();

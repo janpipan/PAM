@@ -13,10 +13,10 @@
     </head>
     <body>
         <h1>Menu</h1>
-        <a href="views/registerImg.jsp">Register Image</a>
-        <a href="views/listImg.jsp">List Images</a>
-        <a href="views/modifyImg.jsp">Modify Images</a>
-        <a href="views/deleteImg.jsp">Delete Image</a>
-        <a href="views/searchImg.jsp">Search Image</a>
+        <a href="registerImg">Register Image</a>
+        <a href="/view/listImg.jsp">List Images</a>
+        <a href="modifyImg">Modify Images</a>
+        <a href="deleteImg">Delete Image</a>
+        <a href="searchImg">Search Image</a>
     </body>
 </html>

@@ -4,8 +4,11 @@
  */
 package controller;
 
+import entity.Image;
 import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,6 +21,7 @@ import java.io.PrintWriter;
  * @author alumne
  */
 @WebServlet(name = "registerImg", urlPatterns = {"/registerImg"})
+@MultipartConfig
 public class registerImg extends HttpServlet {
 
     /**
@@ -29,7 +33,9 @@ public class registerImg extends HttpServlet {
      * @throws ServletException if a servlet-specific error occurs
      * @throws IOException if an I/O error occurs
      */
-    protected void processRequest(HttpServletRequest request, HttpServletResponse response)
+ 
+    
+    protected void processGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         response.setContentType("text/html;charset=UTF-8");
         try {
@@ -42,7 +48,24 @@ public class registerImg extends HttpServlet {
             }
         }
     }
-
+    
+    protected void processPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        
+        ServletContext context = getServletContext();
+        Image img = new Image();
+        context.getAttribute("imageModel").addImage(img);
+        
+        try {
+            ViewManager.nextView(request, response, "/views/menu.jsp");
+        } catch (Exception e) {
+            e.printStackTrace();
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+            if (dispatcher != null) {
+                dispatcher.forward(request,response);
+            }
+        }
+    }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**
      * Handles the HTTP <code>GET</code> method.
@@ -55,7 +78,7 @@ public class registerImg extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        processGet(request, response);
     }
 
     /**
@@ -69,7 +92,7 @@ public class registerImg extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        processPost(request, response);
     }
 
     /**
