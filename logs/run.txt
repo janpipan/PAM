@@ -1,0 +1,112 @@
+Launching GlassFish on Felix platform
+INFO: Create bundle provisioner class = class com.sun.enterprise.glassfish.bootstrap.osgi.BundleProvisioner.
+Registered com.sun.enterprise.glassfish.bootstrap.osgi.EmbeddedOSGiGlassFishRuntime@423e1cbf in service registry.
+#!## LogManagerService.postConstruct : rootFolder=/home/alumne/GlassFish_Server/glassfish
+#!## LogManagerService.postConstruct : templateDir=/home/alumne/GlassFish_Server/glassfish/lib/templates
+#!## LogManagerService.postConstruct : src=/home/alumne/GlassFish_Server/glassfish/lib/templates/logging.properties
+#!## LogManagerService.postConstruct : dest=/home/alumne/GlassFish_Server/glassfish/domains/domain1/config/logging.properties
+  Running GlassFish Version: Eclipse GlassFish  6.2.4  (build 6.x-b50-g4d6a8b5 2022-01-09T17:49:34+0000)|#]
+  Server log file is using Formatter class: com.sun.enterprise.server.logging.ODLLogFormatter|#]
+  Realm [admin-realm] of classtype [com.sun.enterprise.security.auth.realm.file.FileRealm] successfully created.|#]
+  Realm [file] of classtype [com.sun.enterprise.security.auth.realm.file.FileRealm] successfully created.|#]
+  Realm [certificate] of classtype [com.sun.enterprise.security.auth.realm.certificate.CertificateRealm] successfully created.|#]
+  Registered org.glassfish.ha.store.adapter.cache.ShoalBackingStoreProxy for persistence-type = replicated in BackingStoreFactoryRegistry|#]
+  Authorization Service has successfully initialized.|#]
+  Application previously deployed is not at its original location any more: file:/home/alumne/NetBeansProjects/mavenproject1/target/mavenproject1-1.0-SNAPSHOT/|#]
+  Application previously deployed is not at its original location any more: file:/home/alumne/NetBeansProjects/testGlassfish/target/testGlassfish-1.0/|#]
+  Grizzly Framework 3.0.1 started in: 69ms - bound to [/0.0.0.0:8080]|#]
+  Grizzly Framework 3.0.1 started in: 46ms - bound to [/0.0.0.0:8181]|#]
+  visiting unvisited references|#]
+  Grizzly Framework 3.0.1 started in: 31ms - bound to [/0.0.0.0:4848]|#]
+  Grizzly Framework 3.0.1 started in: 6ms - bound to [/0.0.0.0:3700]|#]
+  Java security manager is disabled.|#]
+  Entering Security Startup Service.|#]
+  Loading policy provider org.glassfish.exousia.modules.locked.SimplePolicyProvider.|#]
+  Security Service(s) started successfully.|#]
+  Created HTTP listener http-listener-1 on host/port 0.0.0.0:8080|#]
+  Created HTTP listener http-listener-2 on host/port 0.0.0.0:8181|#]
+  Created HTTP listener admin-listener on host/port 0.0.0.0:4848|#]
+  Created virtual server server|#]
+  Created virtual server __asadmin|#]
+  Setting JAAS app name glassfish-web|#]
+  Virtual server server loaded default web module |#]
+  visiting unvisited references|#]
+  visiting unvisited references|#]
+  WELD-000900: 4.0.2 (Final)|#]
+  HV000001: Hibernate Validator 7.0.1.Final|#]
+  WELD-000411: Observer method [BackedAnnotatedMethod] public org.glassfish.jms.injection.JMSCDIExtension.processAnnotatedType(@Observes ProcessAnnotatedType<T>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.|#]
+  WELD-000411: Observer method [BackedAnnotatedMethod] public org.glassfish.jersey.ext.cdi1x.internal.ProcessAllAnnotatedTypes.processAnnotatedType(@Observes ProcessAnnotatedType<?>, BeanManager) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.|#]
+  WELD-000411: Observer method [BackedAnnotatedMethod] org.glassfish.sse.impl.ServerSentEventCdiExtension.processAnnotatedType(@Observes ProcessAnnotatedType<T>, BeanManager) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.|#]
+  WELD-000146: BeforeBeanDiscovery.addAnnotatedType(AnnotatedType<?>) used for class com.ibm.jbatch.container.cdi.BatchProducerBean is deprecated from CDI 1.1!|#]
+  Initializing Soteria 2.0.1 for context '/lab1'|#]
+  Eclipse Krazo version 2.0.1 started|#]
+  Loading application [lab1-1.0] at [/lab1]|#]
+  Loading application lab1-1.0 done in 9,448 ms|#]
+  Listening to REST requests at context: /management/domain.|#]
+  Eclipse GlassFish  6.2.4  (6.x-b50-g4d6a8b5 2022-01-09T17:49:34+0000) startup time : Felix (4,653ms), startup services(10,686ms), total(15,339ms)|#]
+  Grizzly Framework 3.0.1 started in: 18ms - bound to [/0.0.0.0:7676]|#]
+  Registered com.sun.enterprise.glassfish.bootstrap.osgi.EmbeddedOSGiGlassFishImpl@1efdcd5 as OSGi service registration: org.apache.felix.framework.ServiceRegistrationImpl@1623bbe5.|#]
+  JMXStartupService has started JMXConnector on JMXService URL service:jmx:rmi://PC01:8686/jndi/rmi://PC01:8686/jmxrmi|#]
+  Created HTTP listener http-listener-2 on host/port 0.0.0.0:8181|#]
+  Grizzly Framework 3.0.1 started in: 19ms - bound to [/0.0.0.0:8181]|#]
+  Created HTTP listener http-listener-1 on host/port 0.0.0.0:8080|#]
+  visiting unvisited references|#]
+  Grizzly Framework 3.0.1 started in: 50ms - bound to [/0.0.0.0:8080]|#]
+  visiting unvisited references|#]
+  visiting unvisited references|#]
+  visiting unvisited references|#]
+  visiting unvisited references|#]
+  visiting unvisited references|#]
+  visiting unvisited references|#]
+  visiting unvisited references|#]
+  visiting unvisited references|#]
+  visiting unvisited references|#]
+  WELD-000411: Observer method [BackedAnnotatedMethod] org.glassfish.sse.impl.ServerSentEventCdiExtension.processAnnotatedType(@Observes ProcessAnnotatedType<T>, BeanManager) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.|#]
+  WELD-000411: Observer method [BackedAnnotatedMethod] public org.glassfish.jms.injection.JMSCDIExtension.processAnnotatedType(@Observes ProcessAnnotatedType<T>) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.|#]
+  WELD-000411: Observer method [BackedAnnotatedMethod] public org.glassfish.jersey.ext.cdi1x.internal.ProcessAllAnnotatedTypes.processAnnotatedType(@Observes ProcessAnnotatedType<?>, BeanManager) receives events for all annotated types. Consider restricting events using @WithAnnotations or a generic type with bounds.|#]
+  WELD-000146: BeforeBeanDiscovery.addAnnotatedType(AnnotatedType<?>) used for class com.ibm.jbatch.container.cdi.BatchProducerBean is deprecated from CDI 1.1!|#]
+  Initializing Mojarra 3.0.1 for context ''|#]
+  Initializing Soteria 2.0.1 for context '/Project1'|#]
+  Initializing Mojarra 3.0.1 for context '/Project1'|#]
+  Skipping registration of inhabitant for service reference [org.osgi.service.metatype.MetaTypeProvider] as the service object could not be obtained.|#]
+  Context listener initialized|#]
+  em is null|#]
+  Loading application [__admingui] at [/]|#]
+  Loading application __admingui done in 7,477 ms|#]
+  Loading application [Project1-1.0] at [/Project1]|#]
+  Project1-1.0 was successfully deployed in 5,847 milliseconds.|#]
+  Context path from ServletContext:  differs from path from bundle: /|#]
+  java.lang.NullPointerException: Cannot invoke "model.ImageModel.addImage(entity.Image)" because "imgModel" is null
+	at controller.registerImg.processPost(registerImg.java:98)
+	at controller.registerImg.doPost(registerImg.java:139)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:520)
+	at jakarta.servlet.http.HttpServlet.service(HttpServlet.java:587)
+	at org.apache.catalina.core.StandardWrapper.service(StandardWrapper.java:1540)
+	at org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:217)
+	at org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:119)
+	at org.apache.catalina.core.StandardPipeline.doInvoke(StandardPipeline.java:611)
+	at org.apache.catalina.core.StandardPipeline.invoke(StandardPipeline.java:550)
+	at com.sun.enterprise.web.WebPipeline.invoke(WebPipeline.java:75)
+	at org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:114)
+	at org.apache.catalina.connector.CoyoteAdapter.doService(CoyoteAdapter.java:332)
+	at org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:199)
+	at com.sun.enterprise.v3.services.impl.ContainerMapper$HttpHandlerCallable.call(ContainerMapper.java:440)
+	at com.sun.enterprise.v3.services.impl.ContainerMapper.service(ContainerMapper.java:144)
+	at org.glassfish.grizzly.http.server.HttpHandler.runService(HttpHandler.java:174)
+	at org.glassfish.grizzly.http.server.HttpHandler.doHandle(HttpHandler.java:153)
+	at org.glassfish.grizzly.http.server.HttpServerFilter.handleRead(HttpServerFilter.java:196)
+	at org.glassfish.grizzly.filterchain.ExecutorResolver$9.execute(ExecutorResolver.java:88)
+	at org.glassfish.grizzly.filterchain.DefaultFilterChain.executeFilter(DefaultFilterChain.java:246)
+	at org.glassfish.grizzly.filterchain.DefaultFilterChain.executeChainPart(DefaultFilterChain.java:178)
+	at org.glassfish.grizzly.filterchain.DefaultFilterChain.execute(DefaultFilterChain.java:118)
+	at org.glassfish.grizzly.filterchain.DefaultFilterChain.process(DefaultFilterChain.java:96)
+	at org.glassfish.grizzly.ProcessorExecutor.execute(ProcessorExecutor.java:51)
+	at org.glassfish.grizzly.nio.transport.TCPNIOTransport.fireIOEvent(TCPNIOTransport.java:510)
+	at org.glassfish.grizzly.strategies.AbstractIOStrategy.fireIOEvent(AbstractIOStrategy.java:82)
+	at org.glassfish.grizzly.strategies.WorkerThreadIOStrategy.run0(WorkerThreadIOStrategy.java:83)
+	at org.glassfish.grizzly.strategies.WorkerThreadIOStrategy.access$100(WorkerThreadIOStrategy.java:34)
+	at org.glassfish.grizzly.strategies.WorkerThreadIOStrategy$WorkerThreadRunnable.run(WorkerThreadIOStrategy.java:101)
+	at org.glassfish.grizzly.threadpool.AbstractThreadPool$Worker.doWork(AbstractThreadPool.java:535)
+	at org.glassfish.grizzly.threadpool.AbstractThreadPool$Worker.run(AbstractThreadPool.java:515)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+|#]

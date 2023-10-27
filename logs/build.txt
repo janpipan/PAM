@@ -1,0 +1,47 @@
+cd /home/alumne/NetBeansProjects/Project1; JAVA_HOME=/usr/lib/jvm/java-17-oracle /usr/lib/apache-netbeans/java/maven/bin/mvn --no-transfer-progress clean install
+Scanning for projects...
+
+---------------------------< test:Project1 >----------------------------
+Building Project1-1.0 1.0
+--------------------------------[ war ]---------------------------------
+
+--- maven-clean-plugin:2.5:clean (default-clean) @ Project1 ---
+Deleting /home/alumne/NetBeansProjects/Project1/target
+
+--- maven-dependency-plugin:3.3.0:copy (default) @ Project1 ---
+
+--- maven-resources-plugin:2.6:resources (default-resources) @ Project1 ---
+Using 'UTF-8' encoding to copy filtered resources.
+Copying 1 resource
+
+--- maven-compiler-plugin:3.10.1:compile (default-compile) @ Project1 ---
+Changes detected - recompiling the module!
+Compiling 9 source files to /home/alumne/NetBeansProjects/Project1/target/classes
+/home/alumne/NetBeansProjects/Project1/src/main/java/model/ImageModel.java: /home/alumne/NetBeansProjects/Project1/src/main/java/model/ImageModel.java uses unchecked or unsafe operations.
+/home/alumne/NetBeansProjects/Project1/src/main/java/model/ImageModel.java: Recompile with -Xlint:unchecked for details.
+
+--- maven-resources-plugin:2.6:testResources (default-testResources) @ Project1 ---
+Using 'UTF-8' encoding to copy filtered resources.
+skip non existing resourceDirectory /home/alumne/NetBeansProjects/Project1/src/test/resources
+
+--- maven-compiler-plugin:3.10.1:testCompile (default-testCompile) @ Project1 ---
+Changes detected - recompiling the module!
+
+--- maven-surefire-plugin:2.12.4:test (default-test) @ Project1 ---
+
+--- maven-war-plugin:3.3.2:war (default-war) @ Project1 ---
+Packaging webapp
+Assembling webapp [Project1] in [/home/alumne/NetBeansProjects/Project1/target/Project1-1.0]
+Processing war project
+Copying webapp resources [/home/alumne/NetBeansProjects/Project1/src/main/webapp]
+Building war: /home/alumne/NetBeansProjects/Project1/target/Project1-1.0.war
+
+--- maven-install-plugin:2.4:install (default-install) @ Project1 ---
+Installing /home/alumne/NetBeansProjects/Project1/target/Project1-1.0.war to /home/alumne/.m2/repository/test/Project1/1.0/Project1-1.0.war
+Installing /home/alumne/NetBeansProjects/Project1/pom.xml to /home/alumne/.m2/repository/test/Project1/1.0/Project1-1.0.pom
+------------------------------------------------------------------------
+BUILD SUCCESS
+------------------------------------------------------------------------
+Total time:  8.110 s
+Finished at: 2023-10-27T18:12:34+02:00
+------------------------------------------------------------------------
