@@ -23,18 +23,25 @@ public class ContextListener implements ServletContextListener, HttpSessionListe
     
     @Resource
     private UserTransaction utx;
-    @PersistenceContext
+    @PersistenceContext(unitName="imagePU")
     private EntityManager em;
     
     public void contextInitialized(ServletContextEvent event) {
-        try {
-            ServletContext context = event.getServletContext();
-            context.setAttribute("test", "test");
+        
+        
+        
+        ServletContext context = event.getServletContext();
+        System.out.println("Context listener initialized");
+        if (em!=null){
+            System.out.println("em is not null");
             context.setAttribute("imageModel", new ImageModel(em,utx));
-            
-        } catch (Exception e) {
-            e.printStackTrace();
+        } else {
+            System.out.println("em is null");
         }
+        
+        context.setAttribute("test", "test");
+        
+        
         
     }
     

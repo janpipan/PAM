@@ -5,6 +5,7 @@
 package controller;
 
 import entity.Image;
+import jakarta.jms.Connection;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,9 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -60,6 +64,8 @@ public class registerImg extends HttpServlet {
             
         ServletContext context = getServletContext();
         
+
+        
         
         String title = req.getParameter("title");
         String description = req.getParameter("description");
@@ -90,9 +96,9 @@ public class registerImg extends HttpServlet {
         ImageModel imgModel = (ImageModel) context.getAttribute("imageModel");
         //System.out.println(context.getAttribute("test"));
         imgModel.addImage(img);
-        
+       
         try {
-            ViewManager.nextView(req, res, "/views/menu.jsp");
+            ViewManager.nextView(req, res, "/menu.jsp");
         } catch (Exception e) {
             e.printStackTrace();
             RequestDispatcher dispatcher = req.getRequestDispatcher("/error.jsp");
