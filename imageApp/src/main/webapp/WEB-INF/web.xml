@@ -7,6 +7,9 @@
         <description>ServletContextListener</description>
         <listener-class>test.util.ContextListener</listener-class>
     </listener>
+    <welcome-file-list>
+        <welcome-file>menu.jsp</welcome-file>
+    </welcome-file-list>
     <session-config>
         <session-timeout>
             30

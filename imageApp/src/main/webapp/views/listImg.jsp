@@ -12,6 +12,7 @@
         <title>JSP Page</title>
     </head>
     <body>
+        
         <h1>ListImg</h1>
         <div class='container'>
             <table>
@@ -25,6 +26,7 @@
                     <th>StorageDate</th>
                     <th>Filename</th>
                     <th>Encrypted</th>
+                    <th>Edit</th>
                     <th>Delete</th>
                     
                 </tr>
@@ -44,6 +46,14 @@
                         <td><%=rs.getString("filename")%></td>
                         <td><%=rs.getString("encrypted")%></td>
                         <td>
+                            <button>
+                                <a href="modifyImg?id=<%=rs.getString("id")%>">Edit</a>
+                            </button>
+                        </td>
+                        <td>
+                            <button>
+                                <a href="deleteImg?id=<%=rs.getString("id")%>">Delete</a>
+                            </button>
                         </td>
                     </tr>
                     
@@ -53,5 +63,7 @@
                 %>
             </table>
         </div>
+            
+        
     </body>
 </html>

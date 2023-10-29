@@ -4,6 +4,7 @@
  */
 package test.controller;
 
+import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
@@ -11,6 +12,11 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.sql.Connection;
+import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 
 /**
  *
@@ -57,7 +63,38 @@ public class deleteImg extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Connection connection = null;
+        response.setContentType("text/html;charset=UTF-8");
+        try {
+            String query;
+            PreparedStatement statement;
+            
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            // create a database connection
+            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
+                  
+            
+            // Select information from users and images and show in the web
+            query = "SELECT * FROM Image WHERE Image.id = " + request.getParameter("id");
+            statement = connection.prepareStatement(query);
+            ResultSet rs = statement.executeQuery();  
+            
+            System.out.println(rs);
+            request.getSession().setAttribute("resultSet", rs);
+            response.setContentType("text/html;charset=UTF-8");
+            try {
+                ViewManager.nextView(request, response, "/views/deleteImg.jsp");
+            } catch (Exception e) {
+                e.printStackTrace();
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                if (dispatcher != null) {
+                    dispatcher.forward(request,response);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -73,12 +110,7 @@ public class deleteImg extends HttpServlet {
             throws ServletException, IOException {
         processRequest(request, response);
     }
-    
-    @Override
-    protected void doDelete(HttpServletRequest request, HttpServletResponse response) 
-            throws ServletException, IOException {
-        System.out.println("deleteMethod");
-    }
+  
 
     /**
      * Returns a short description of the servlet.
