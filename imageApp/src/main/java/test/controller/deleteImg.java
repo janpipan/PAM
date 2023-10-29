@@ -17,6 +17,7 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import test.entity.Image;
 
 /**
  *
@@ -75,13 +76,22 @@ public class deleteImg extends HttpServlet {
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
                   
             
-            // Select information from users and images and show in the web
-            query = "SELECT * FROM Image WHERE Image.id = " + request.getParameter("id");
-            statement = connection.prepareStatement(query);
-            ResultSet rs = statement.executeQuery();  
+            // get image 
+            //query = "SELECT * FROM Image WHERE Image.id = " + request.getParameter("id");
+            //statement = connection.prepareStatement(query);
+            //ResultSet rs = statement.executeQuery();
             
-            System.out.println(rs);
-            request.getSession().setAttribute("resultSet", rs);
+            //rs.next();
+            //request.getSession().setAttribute("resultSet", rs);
+            
+            // delete image
+            query = "DELETE FROM Image WHERE Image.id = " + request.getParameter("id");
+            statement = connection.prepareStatement(query);
+            statement.execute();
+            connection.close();
+            
+            
+            
             response.setContentType("text/html;charset=UTF-8");
             try {
                 ViewManager.nextView(request, response, "/views/deleteImg.jsp");

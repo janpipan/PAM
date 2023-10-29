@@ -12,19 +12,13 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <%
-            ResultSet rs = (ResultSet) request.getSession().getAttribute("resultSet");
-            rs.next();
-        %>
+        <a href="registerImg">Register Image</a>
+        <a href="listImg">List Images</a>
+        <a href="modifyImg">Modify Images</a>
+        <a href="deleteImg">Delete Image</a>
+        <a href="searchImg">Search Image</a>
         
-        <p><%=rs.getString("title")%></p>
-        <p><%=rs.getString("description")%></p>
-        <p><%=rs.getString("keywords")%></p>
-        <p><%=rs.getString("author")%></p>
-        <p><%=rs.getString("creator")%></p>
-        <p><%=rs.getString("capturingdate")%></p>
-        <p><%=rs.getString("storagedate")%></p>
-        <p><%=rs.getString("filename")%></p>
-        <p><%=rs.getString("encrypted")%></p>
+        
+        Image deleted
     </body>
 </html>
