@@ -13,6 +13,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -95,7 +96,59 @@ public class modifyImg extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+        Connection connection = null;
+        response.setContentType("text/html;charset=UTF-8");
+        try {
+            String query;
+            PreparedStatement statement;
+            
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            // create a database connection
+            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
+                  
+            
+          
+            
+            // update image metadata
+            //query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ? WHERE id = " + request.getParameter("id"); 
+            query = "UPDATE Image SET Title = ? WHERE id = " + request.getParameter("id"); 
+            System.out.println(query);
+            statement = connection.prepareStatement(query);
+            statement.setString(1, (String) request.getParameter("title"));
+            //statement.setString(2, (String) request.getParameter("description"));
+            //statement.setString(3, (String) request.getParameter("keywords"));
+            //statement.setString(4, (String) request.getParameter("author"));
+            //statement.setString(5, (String) request.getParameter("creator"));
+            //String date = request.getParameter("capturingdate");
+            //String[] dateArray = date.split("-");
+            //statement.setDate(6, new Date(Integer.parseInt(dateArray[0]),Integer.parseInt(dateArray[1]),Integer.parseInt(dateArray[2])));
+            //statement.setString(7, request.getParameter("creator"));
+            //statement.setBoolean(8, "on".equals(request.getParameter("encrypt")));
+            System.out.println("Executing");
+            statement.executeUpdate();
+            System.out.println("Executed");
+            statement.close();
+            System.out.println("statement closed");
+            connection.close();
+            System.out.println("connection closed");
+            
+            System.out.println("modified");
+            
+            
+            response.setContentType("text/html;charset=UTF-8");
+            try {
+                ViewManager.nextView(request, response, "/views/deleteImg.jsp");
+            } catch (Exception e) {
+                e.printStackTrace();
+                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                if (dispatcher != null) {
+                    dispatcher.forward(request,response);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**

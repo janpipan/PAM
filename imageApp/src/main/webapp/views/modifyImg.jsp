@@ -17,7 +17,7 @@
             rs.next();
         %>
         <form action="modifyImg" method="post" enctpye="multipart/form-data">
-            
+            <input type="hidden" name="id" value="<%=rs.getString("id")%>"/>
             <label for="title">Title: </label>
             <input type="text" id="title" name="title" value="<%=rs.getString("title")%>" required><br>
             <label for="description">Description: </label>
@@ -28,13 +28,13 @@
             <input type="text" id="author" name="author" value="<%=rs.getString("author")%>" required><br>
             <label for="creator">Creator: </label>
             <input type="text" id="creator" name="creator" value="<%=rs.getString("creator")%>" required><br>
-            <label for="captureDate">Capture date: </label>
-            <input type="date" id="capturingdata" name="capturingdata" required><br>
+            <label for="capturingdate">Capture date: </label>
+            <input type="date" id="capturingdate" name="capturingdate" required><br>
             <label for="fileName">File name: </label>
             <input type="text" id="fileName" name="fileName" value="<%=rs.getString("filename")%>" required><br>
             <label for="encrypt">Encrypt: </label>
-            <input type="checkbox" id="encrypt" name="encrypt" required><br>
-            <input type="file" name="file" required><br>
+            <input type="checkbox" id="encrypt" name="encrypt" ><br>
+            <input type="file" name="file" ><br>
             <button type="submit">Upload</button>
             
         </form>
