@@ -5,6 +5,7 @@
 package test.entity;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
 import java.util.Date;
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -69,8 +70,18 @@ public class Image implements Serializable {
     public Image() {
     }
 
-    public Image(Integer id) {
+    public Image(Integer id, String title, String description, String keywords, String author, String creator, Date capturingdate, Date storagedate, String filename, Boolean encrypted) {
         this.id = id;
+        this.title = title;
+        this.description = description;
+        this.keywords = keywords;
+        this.author = author;
+        this.creator = creator;
+        this.capturingdate = capturingdate;
+        this.storagedate = storagedate;
+        this.filename = filename;
+        this.encrypted = encrypted;
+        
     }
 
     public Integer getId() {
@@ -177,5 +188,7 @@ public class Image implements Serializable {
     public String toString() {
         return "test.entity.Image[ id=" + id + " ]";
     }
+    
+    
     
 }

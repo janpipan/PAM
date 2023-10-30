@@ -3,7 +3,8 @@
     Created on : Oct 28, 2023, 7:15:10 PM
     Author     : alumne
 --%>
-<%@page import="java.sql.ResultSet"%>
+<%@page import="test.entity.Image"%>
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -13,30 +14,36 @@
     </head>
     <body>
         <%
-            ResultSet rs = (ResultSet) request.getSession().getAttribute("resultSet");
-            rs.next();
+            List<Image> imgList =  (List<Image>) request.getSession().getAttribute("imgList");
+            for(Image img: imgList){
         %>
         <form action="modifyImg" method="post" enctpye="multipart/form-data">
-            <input type="hidden" name="id" value="<%=rs.getString("id")%>"/>
+            <input type="hidden" name="id" value="<%=img.getId()%>"/>
             <label for="title">Title: </label>
-            <input type="text" id="title" name="title" value="<%=rs.getString("title")%>" required><br>
+            <input type="text" id="title" name="title" value="<%=img.getTitle()%>" required><br>
             <label for="description">Description: </label>
-            <input type="text" id="description" name="description" value="<%=rs.getString("description")%>" required><br>
+            <input type="text" id="description" name="description" value="<%=img.getDescription()%>" required><br>
             <label for="keywords">Keywords: </label>
-            <input type="text" id="keywords" name="keywords" value="<%=rs.getString("keywords")%>" required><br>
+            <input type="text" id="keywords" name="keywords" value="<%=img.getKeywords()%>" required><br>
             <label for="author">Author: </label>
-            <input type="text" id="author" name="author" value="<%=rs.getString("author")%>" required><br>
+            <input type="text" id="author" name="author" value="<%=img.getAuthor()%>" required><br>
             <label for="creator">Creator: </label>
-            <input type="text" id="creator" name="creator" value="<%=rs.getString("creator")%>" required><br>
+            <input type="text" id="creator" name="creator" value="<%=img.getCreator()%>" required><br>
             <label for="capturingdate">Capture date: </label>
             <input type="date" id="capturingdate" name="capturingdate" required><br>
+            <!--
             <label for="fileName">File name: </label>
-            <input type="text" id="fileName" name="fileName" value="<%=rs.getString("filename")%>" required><br>
+            <input type="text" id="fileName" name="fileName" value="<%=img.getFilename()%>" required><br>
+            -->
             <label for="encrypt">Encrypt: </label>
             <input type="checkbox" id="encrypt" name="encrypt" ><br>
             <input type="file" name="file" ><br>
             <button type="submit">Upload</button>
             
         </form>
+            
+        <%
+            }
+        %>    
     </body>
 </html>

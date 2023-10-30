@@ -13,7 +13,7 @@
     </head>
     <body>
         <h1>Upload image</h1>
-        <form action="registerImg" method="post" enctpye="multipart/form-data">
+        <form action="registerImg" method="post" enctype="multipart/form-data">
             <!--
             <label for="title">Title: </label>
             <input type="text" id="title" name="title" required><br>
@@ -46,8 +46,10 @@
             <input type="text" id="creator" name="creator" ><br>
             <label for="capturingdate">Capture date: </label>
             <input type="date" id="capturingdate" name="capturingdate" ><br>
+            <!--
             <label for="fileName">File name: </label>
             <input type="text" id="fileName" name="fileName" ><br>
+            -->
             <label for="encrypt">Encrypt: </label>
             <input type="checkbox" id="encrypt" name="encrypt" ><br>
             <input type="file" name="file" ><br>

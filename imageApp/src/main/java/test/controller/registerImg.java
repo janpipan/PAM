@@ -9,10 +9,18 @@ import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletContext;
 import java.io.IOException;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.nio.file.Path;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -27,7 +35,14 @@ import test.model.ImageModel;
  * @author alumne
  */
 @WebServlet(name = "registerImg", urlPatterns = {"/registerImg"})
+@MultipartConfig(fileSizeThreshold=1024*1024*2,
+                 maxFileSize=1024*1024*10,
+                 maxRequestSize=1024*1024*50,
+                 location="/"
+        )
 public class registerImg extends HttpServlet {
+    
+    private static final String SAVE_DIR = "/home/alumne/imgs";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -49,43 +64,88 @@ public class registerImg extends HttpServlet {
     protected void processPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
         
-        Connection con = null;
+        Connection connection = null;
         String query;
         PreparedStatement statement;
+        Part filePart;
+        String fileName, savePath;
+        OutputStream out = null;
+        InputStream filecontent = null;
+        
+        int read;
+        
         try {
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
             // create a database connection
-            con = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
+            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
 
-            System.out.println("connected");
+            //System.out.println("connected");
             
+            filePart = req.getPart("file");
+            fileName = getFileName(filePart);
             
+                        
+            System.out.println(fileName);
             
+            Path p = Paths.get(fileName);
+            fileName = p.getFileName().toString();
+            savePath = SAVE_DIR + File.separator + fileName;
+            
+            out = new FileOutputStream(new File(savePath));
+            filecontent = filePart.getInputStream();
+            
+            final byte[] bytes = new byte[1024];
+            
+            while ((read = filecontent.read(bytes)) != -1) {
+                out.write(bytes, 0, read);
+            }
+            
+            System.out.println("New file" + fileName + " created at " + SAVE_DIR);
      
             query = "INSERT INTO image(Title, Description, Keywords, Author, Creator, CapturingDate, Filename, Encrypted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             
-            statement = con.prepareStatement(query);
+            statement = connection.prepareStatement(query);
             statement.setString(1, (String) req.getParameter("title"));
             statement.setString(2, (String) req.getParameter("description"));
             statement.setString(3, (String) req.getParameter("keywords"));
             statement.setString(4, (String) req.getParameter("author"));
             statement.setString(5, (String) req.getParameter("creator"));
-            String date = req.getParameter("capturingdate");
-            String[] dateArray = date.split("-");
-            statement.setDate(6, new Date(Integer.parseInt(dateArray[0]),Integer.parseInt(dateArray[1]),Integer.parseInt(dateArray[2])));
-            statement.setString(7, req.getParameter("creator"));
+            statement.setDate(6,Date.valueOf(req.getParameter("capturingdate")));
+            statement.setString(7, fileName);
             statement.setBoolean(8, "on".equals(req.getParameter("encrypt")));
             statement.executeUpdate();  
             
+            statement.close();
+            connection.close();
+            //System.out.println("New image meta data added");
+            System.out.println("Image added successfuly");
             
-            System.out.println("New image meta data added");
-            
-            
+            res.setContentType("text/html;charset=UTF-8");
+            try {
+                ViewManager.nextView(req, res, "/menu.jsp");
+            } catch (Exception e) {
+                e.printStackTrace();
+                RequestDispatcher dispatcher = req.getRequestDispatcher("/error.jsp");
+                if (dispatcher != null) {
+                    dispatcher.forward(req,res);
+                }
+            }
             
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+    
+    private String getFileName(Part part){
+        String contentDisp = part.getHeader("content-disposition");
+        String[] items = contentDisp.split(";");
+        for (String s : items){
+            if (s.trim().startsWith("filename")){
+                return s.substring(s.indexOf("=") + 2, s.length()-1);
+            }
+        }
+        return "";
     }
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

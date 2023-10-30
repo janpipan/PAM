@@ -17,6 +17,9 @@ import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.List;
+import test.entity.Image;
 
 /**
  *
@@ -52,6 +55,7 @@ public class modifyImg extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Connection connection = null;
+        List<Image> imgList = new ArrayList<>();
         response.setContentType("text/html;charset=UTF-8");
         try {
             String query;
@@ -66,10 +70,27 @@ public class modifyImg extends HttpServlet {
             // Select information from users and images and show in the web
             query = "SELECT * FROM Image WHERE Image.id = " + request.getParameter("id");
             statement = connection.prepareStatement(query);
-            ResultSet rs = statement.executeQuery();  
+            ResultSet rs = statement.executeQuery(); 
             
-            System.out.println(rs);
-            request.getSession().setAttribute("resultSet", rs);
+            while (rs.next()){
+                Integer id = rs.getInt("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String keywords = rs.getString("keywords");
+                String author = rs.getString("author");
+                String creator = rs.getString("creator");
+                java.util.Date capturingdate = rs.getDate("capturingdate");
+                java.util.Date storagedate = rs.getDate("storagedate");
+                String filename = rs.getString("filename");
+                Boolean encrypted = rs.getBoolean("encrypted");
+                Image img = new Image(id, title, description, keywords, author, creator, capturingdate, storagedate, filename, encrypted);
+                imgList.add(img);
+            }
+            
+            //System.out.println(rs);
+            request.getSession().setAttribute("imgList", imgList);
+            statement.close();
+            connection.close();
             response.setContentType("text/html;charset=UTF-8");
             try {
                 ViewManager.nextView(request, response, "/views/modifyImg.jsp");
@@ -106,9 +127,6 @@ public class modifyImg extends HttpServlet {
 
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
-                  
-            
-          
             
             // update image metadata
             //query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ? WHERE id = " + request.getParameter("id"); 
