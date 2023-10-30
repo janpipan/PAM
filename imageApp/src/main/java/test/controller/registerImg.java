@@ -28,6 +28,7 @@ import java.sql.ResultSet;
 import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.crypto.spec.SecretKeySpec;
 import test.model.ImageModel;
 
 /**
@@ -71,6 +72,8 @@ public class registerImg extends HttpServlet {
         String fileName, savePath;
         OutputStream out = null;
         InputStream filecontent = null;
+        String secretKey = "secretKey";
+        
         
         int read;
         
@@ -91,6 +94,8 @@ public class registerImg extends HttpServlet {
             Path p = Paths.get(fileName);
             fileName = p.getFileName().toString();
             savePath = SAVE_DIR + File.separator + fileName;
+            
+            SecretKeySpec key = new SecretKeySpec(secretKey.getBytes(), "AES");
             
             out = new FileOutputStream(new File(savePath));
             filecontent = filePart.getInputStream();
