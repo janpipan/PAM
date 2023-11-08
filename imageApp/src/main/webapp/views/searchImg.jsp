@@ -38,10 +38,14 @@
                 </ul>
             </div>
         </nav>
-        <h1>Search Image</h1>
-        <div class="container d-flex align-items-center justify-content-center" style="height: 10vh;">
-            <form method="post" action="searchImg">
-                <div class="form-group">
+        <div class="container mt-4">
+            <div class="text-center">
+                <h1>Search Image</h1>
+            </div>
+        </div>
+        <div class="container mt-4">
+            <form method="post" action="searchImg" class="form-inline">
+                <div class="form-group mr-2">
                     <select name="attribute" class="form-control">
                         <option value="title">Title</option>
                         <option value="author">Author</option>
@@ -49,9 +53,10 @@
                         <option value="capturingdate">Capturing date</option>
                         <option value="storagedate">Storage date</option>
                     </select>
-                    <input type="text" id="searchQuery" name="searchQuery" >
                 </div>
-                
+                <div class="form-group mr-2">
+                    <input type="text" id="searchQuery" name="searchQuery" class="form-control" placeholder="Enter your search query">
+                </div>
                 <button type="submit" class="btn btn-primary">Search</button>
             </form>
         </div>
