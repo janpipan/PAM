@@ -11,9 +11,15 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
+import test.util.Encrypt;
 
 /**
  *
@@ -52,19 +58,49 @@ public class displayImg extends HttpServlet {
         
         //System.out.println("test");
         String imageName = request.getParameter("imageName");
+        String keyPassword = request.getParameter("password");
         String imagePath = "/home/alumne/imgs/" + imageName;
+        String salt = "salt";
+        
         
         String contentType = getServletContext().getMimeType(imagePath);
         response.setContentType(contentType);
         
-        try (InputStream is = new FileInputStream(imagePath); 
-                OutputStream os = response.getOutputStream()) {
-            byte[] buffer = new byte[4096];
-            int bytesRead;
-            while ((bytesRead = is.read(buffer)) != -1) {
-                os.write(buffer,0, bytesRead);
+        if (keyPassword != null) {
+            byte[] decryptedImage = null;
+        
+            try {
+                SecretKey key = Encrypt.getKeyFromPassword(keyPassword, salt);
+                byte[] encryptedImage = Files.readAllBytes(Paths.get(imagePath));
+                decryptedImage = Encrypt.decrypt(encryptedImage, (SecretKeySpec) key);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+            if (decryptedImage != null) {
+
+                try (InputStream is = new ByteArrayInputStream(decryptedImage); 
+                        OutputStream os = response.getOutputStream()) {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = is.read(buffer)) != -1) {
+                        os.write(buffer,0, bytesRead);
+                    }
+                }
+                System.out.println("works");
+            }
+        } else {
+            try (InputStream is = new FileInputStream(imagePath); 
+                        OutputStream os = response.getOutputStream()) {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = is.read(buffer)) != -1) {
+                        os.write(buffer,0, bytesRead);
+                    }
+                }
         }
+        
+        
     }
 
     /**

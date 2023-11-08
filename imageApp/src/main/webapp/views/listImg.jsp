@@ -64,7 +64,8 @@
                             if (img.getEncrypted()){
                         %>
                             <td>
-                                <div id="img-<%=img.getId()%>">Image is encrypted</div>
+                                <div >Image is encrypted</div>
+                                <img id="img-<%=img.getId()%>">
                             </td>
                         <%
                             }else {
@@ -123,10 +124,11 @@
                 xhr.onreadystatechange = function () {
                     if (xhr.readyState == 4) {
                         if (xhr.status == 200) {
-                            const imageContainer = document.getElementById(`img-${id}`);
-                            const img = new Image();
-                            img.src = URL.createObjectURL(xhr.response);
-                            imageContainer.appendChild(img);
+                            const img = document.getElementById('img-'+id);
+                            console.log(xhr.response);
+                            const urlCreator = window.URL || window.webkitURL;
+                            const imageUrl = urlCreator.createObjectURL(xhr.response);
+                            img.src = imageUrl;
                             
                         } else {
                             console.error("Incorrect password");
@@ -134,7 +136,6 @@
                     }
                 };
                 const reqString = 'displayImg?imageName=' + filename + '&password=' + password;
-                console.log(reqString);
                 xhr.open("GET", reqString);
                 xhr.responseType = "blob";
                 xhr.send();

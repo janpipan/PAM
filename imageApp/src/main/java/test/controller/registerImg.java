@@ -112,7 +112,8 @@ public class registerImg extends HttpServlet {
             
             if ("on".equals(req.getParameter("encrypt"))){
                 String keyPassword = req.getParameter("encryptPassword");
-                String salt = new String(Encrypt.generateSalt());
+                //String salt = new String(Encrypt.generateSalt());
+                String salt = "salt";
                 fileName = "encrypted-" + fileName;
                 String encryptedPath = SAVE_DIR + File.separator + fileName;
 
