@@ -43,6 +43,7 @@
                 <div class="form-group mr-2">
                     <select name="attribute" class="form-control">
                         <option value="title">Title</option>
+                        <option value="keywords">Keyword</option>
                         <option value="author">Author</option>
                         <option value="creator">Creator</option>
                         <option value="capturingdate">Capturing date</option>
@@ -63,6 +64,7 @@
             <table class="table table-bordered table-striped">
                 <thead class="thead-light">
                     <tr>
+                       <th>Image</th>
                        <th>Title</th>
                        <th>Description</th>
                        <th>Keywords</th>
@@ -81,6 +83,21 @@
                         for(Image img: imgList){
                 %>
                 <tr>
+                    <%
+                        if (img.getEncrypted()){
+                    %>
+                        <td>
+                            <div>Image is encrypted</div>
+                        </td>
+                    <%
+                        }else {
+                    %>
+                    <td>
+                        <img src="displayImg?imageName=<%=img.getFilename()%>" style="max-height: 100px;">
+                    </td>
+                    <%
+                        }
+                    %>
                     <td><%=img.getTitle()%></td>
                     <td><%=img.getDescription()%></td>
                     <td><%=img.getKeywords()%></td>

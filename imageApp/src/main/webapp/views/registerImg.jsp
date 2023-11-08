@@ -68,7 +68,7 @@
                 </div>
                 <div class="form-group"id="encryptInput" style="display:none;">
                     <label for="encryptPassword">Encryption password</label>
-                    <input type="password" id="encryptPassword" name="encryptpassword" class="form-control">
+                    <input type="password" id="encryptPassword" name="encryptPassword" class="form-control">
                 </div>
 
                 <input type="file" name="file" ><br>

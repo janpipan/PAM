@@ -38,6 +38,7 @@
             <table class="table table-bordered table-striped">
                 <thead class="thead-light">
                     <tr>
+                        <th>Image</th>
                         <th>Title</th>
                         <th>Description</th>
                         <th>Keywords</th>
@@ -49,14 +50,31 @@
                         <th>Encrypted</th>
                         <th>Edit</th>
                         <th>Delete</th>
+                        <th>Decrypt</th>
                     </tr>
                 </thead>
                 <%
                     List<Image> imgList =  (List<Image>) request.getSession().getAttribute("imgList");
-                    for(Image img: imgList){
+                    if (imgList != null) {
+                        for(Image img: imgList){
 
                 %>
                     <tr>
+                        <%
+                            if (img.getEncrypted()){
+                        %>
+                            <td>
+                                <div id="img-<%=img.getId()%>">Image is encrypted</div>
+                            </td>
+                        <%
+                            }else {
+                        %>
+                        <td>
+                            <img src="displayImg?imageName=<%=img.getFilename()%>" style="max-height: 100px;" >
+                        </td>
+                        <%
+                            }
+                        %>
                         <td><%=img.getTitle()%></td>
                         <td><%=img.getDescription()%></td>
                         <td><%=img.getKeywords()%></td>
@@ -76,15 +94,53 @@
                                 <a href="deleteImg?id=<%=img.getId()%>" style="text-decoration: none; color: white;">Delete</a>
                             </button>
                         </td>
+                        <%
+                            if (img.getEncrypted()){
+                        %>
+                        <td>
+                            <input type="password" id="passwordInput" placeholder="Enter password">
+                            <button onclick="loadImage('<%=img.getFilename()%>',<%=img.getId()%>)" class="btn btn-primary">Submit password</button>
+                        </td>
+                        <%
+                            }
+                        %>
                     </tr>
                     
 
                 <%
+                        }
                     }
                 %>
             </table>
         </div>
             
+        <script>
+            function loadImage(filename, id) {
+                
+                const password = document.getElementById("passwordInput").value;
+                
+                const xhr = new XMLHttpRequest();
+                xhr.onreadystatechange = function () {
+                    if (xhr.readyState == 4) {
+                        if (xhr.status == 200) {
+                            const imageContainer = document.getElementById(`img-${id}`);
+                            const img = new Image();
+                            img.src = URL.createObjectURL(xhr.response);
+                            imageContainer.appendChild(img);
+                            
+                        } else {
+                            console.error("Incorrect password");
+                        }
+                    }
+                };
+                const reqString = 'displayImg?imageName=' + filename + '&password=' + password;
+                console.log(reqString);
+                xhr.open("GET", reqString);
+                xhr.responseType = "blob";
+                xhr.send();
+                
+            }
+        </script>
         
     </body>
 </html>

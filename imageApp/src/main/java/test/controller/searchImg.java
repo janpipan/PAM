@@ -95,7 +95,13 @@ public class searchImg extends HttpServlet {
                   
             
             // Select information from users and images and show in the web
-            query = "SELECT * FROM Image WHERE Image." + (String) request.getParameter("attribute") + " = '" + (String) request.getParameter("searchQuery") + "'";
+            String attribute = (String) request.getParameter("attribute");
+            if (attribute.equals("keywords")) {
+                query = "SELECT * FROM Image WHERE Image." + attribute + " Like '%" + (String) request.getParameter("searchQuery") + "%'";
+            } else {
+                query = "SELECT * FROM Image WHERE Image." + attribute + " = '" + (String) request.getParameter("searchQuery") + "'";
+            }
+            
             System.out.println(query);
             statement = connection.prepareStatement(query);
             ResultSet rs = statement.executeQuery();  
