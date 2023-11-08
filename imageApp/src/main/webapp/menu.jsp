@@ -12,6 +12,10 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Menu</a>
+            
+        </nav>
         <h1>Menu</h1>
         <a href="registerImg">Register Image</a>
         <a href="listImg">List Images</a>
