@@ -43,7 +43,7 @@
                 <h1>Search Image</h1>
             </div>
         </div>
-        <div class="container mt-4">
+        <div class="container mt-4 d-flex align-items-center justify-content-center">
             <form method="post" action="searchImg" class="form-inline">
                 <div class="form-group mr-2">
                     <select name="attribute" class="form-control">
@@ -62,8 +62,8 @@
         </div>
         
         <%
-            ResultSet rs = (ResultSet) request.getSession().getAttribute("resultSet");
-            if (rs != null) {
+            List<Image> imgList =  (List<Image>) request.getSession().getAttribute("imgList");
+            if (imgList != null) {
         %>
         <table>
              <tr>
@@ -79,10 +79,10 @@
 
             </tr>
             <%
-                while (rs.next()) {
+                for(Image img: imgList){
             %>
             <tr>
-                <td><%=rs.getString("title")%></td>
+                <td><%=img.getTitle()%></td>
                 <td><%=rs.getString("description")%></td>
                 <td><%=rs.getString("keywords")%></td>
                 <td><%=rs.getString("author")%></td>

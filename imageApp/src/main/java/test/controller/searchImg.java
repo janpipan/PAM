@@ -16,6 +16,10 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import test.entity.Image;
 
 /**
  *
@@ -76,6 +80,7 @@ public class searchImg extends HttpServlet {
             throws ServletException, IOException {
         //processRequest(request, response);
         Connection connection = null;
+        List<Image> imgList = new ArrayList<>();
         response.setContentType("text/html;charset=UTF-8");
         try {
             String query;
@@ -93,11 +98,30 @@ public class searchImg extends HttpServlet {
             statement = connection.prepareStatement(query);
             ResultSet rs = statement.executeQuery();  
             
-            System.out.println(rs);
-            request.getSession().setAttribute("resultSet", rs);
+            
+            while (rs.next()){
+                Integer id = rs.getInt("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String keywords = rs.getString("keywords");
+                String author = rs.getString("author");
+                String creator = rs.getString("creator");
+                Date capturingdate = rs.getDate("capturingdate");
+                Date storagedate = rs.getDate("storagedate");
+                String filename = rs.getString("filename");
+                Boolean encrypted = rs.getBoolean("encrypted");
+                Image img = new Image(id, title, description, keywords, author, creator, capturingdate, storagedate, filename, encrypted);
+                imgList.add(img);
+            }
+            
+            request.getSession().setAttribute("imgList", imgList);
+            
+            
+            statement.close();
+            connection.close();
             response.setContentType("text/html;charset=UTF-8");
             try {
-                ViewManager.nextView(request, response, "/views/listImg.jsp");
+                ViewManager.nextView(request, response, "/views/searchImg.jsp");
             } catch (Exception e) {
                 e.printStackTrace();
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
