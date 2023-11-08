@@ -12,12 +12,14 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import test.util.Encrypt;
 
@@ -27,6 +29,8 @@ import test.util.Encrypt;
  */
 @WebServlet(name = "displayImg", urlPatterns = {"/displayImg"})
 public class displayImg extends HttpServlet {
+    
+    private static final String SAVE_DIR = "/home/alumne/imgs";
 
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
@@ -63,41 +67,41 @@ public class displayImg extends HttpServlet {
         String salt = "salt";
         
         
+        
         String contentType = getServletContext().getMimeType(imagePath);
         response.setContentType(contentType);
         
         if (keyPassword != null) {
-            byte[] decryptedImage = null;
-        
+            
+       
             try {
                 SecretKey key = Encrypt.getKeyFromPassword(keyPassword, salt);
-                byte[] encryptedImage = Files.readAllBytes(Paths.get(imagePath));
-                decryptedImage = Encrypt.decrypt(encryptedImage, (SecretKeySpec) key);
+                IvParameterSpec iv = (IvParameterSpec) getServletContext().getAttribute("iv");
+                Encrypt.decryptFile(key, iv, new File(imagePath), new File(SAVE_DIR + File.separator + "temp"));
             } catch (Exception e) {
                 e.printStackTrace();
             }
 
-            if (decryptedImage != null) {
 
-                try (InputStream is = new ByteArrayInputStream(decryptedImage); 
-                        OutputStream os = response.getOutputStream()) {
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = is.read(buffer)) != -1) {
-                        os.write(buffer,0, bytesRead);
-                    }
+            try (InputStream is = new FileInputStream(SAVE_DIR + File.separator + "temp"); 
+                    OutputStream os = response.getOutputStream()) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    os.write(buffer,0, bytesRead);
                 }
+            
                 System.out.println("works");
             }
         } else {
             try (InputStream is = new FileInputStream(imagePath); 
-                        OutputStream os = response.getOutputStream()) {
-                    byte[] buffer = new byte[4096];
-                    int bytesRead;
-                    while ((bytesRead = is.read(buffer)) != -1) {
-                        os.write(buffer,0, bytesRead);
-                    }
+                    OutputStream os = response.getOutputStream()) {
+                byte[] buffer = new byte[4096];
+                int bytesRead;
+                while ((bytesRead = is.read(buffer)) != -1) {
+                    os.write(buffer,0, bytesRead);
                 }
+            }
         }
         
         

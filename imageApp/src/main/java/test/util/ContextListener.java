@@ -11,6 +11,7 @@ import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 import jakarta.servlet.http.HttpSessionEvent;
 import jakarta.transaction.UserTransaction;
+import javax.crypto.spec.IvParameterSpec;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
@@ -29,6 +30,8 @@ public class ContextListener implements ServletContextListener {
     public void contextInitialized(ServletContextEvent e) {
         
         ServletContext context = e.getServletContext();
+        IvParameterSpec iv = Encrypt.generateIv();
+        context.setAttribute("iv", iv);
         
         
         

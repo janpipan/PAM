@@ -29,6 +29,7 @@ import java.sql.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.SecretKey;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import test.model.ImageModel;
 import test.util.Encrypt;
@@ -118,7 +119,9 @@ public class registerImg extends HttpServlet {
                 String encryptedPath = SAVE_DIR + File.separator + fileName;
 
                 SecretKey key = Encrypt.getKeyFromPassword(keyPassword, salt);
-                Encrypt.encryptFile(key, Encrypt.generateIv(), new File(savePath), new File(encryptedPath));
+                IvParameterSpec iv = (IvParameterSpec) getServletContext().getAttribute("iv");
+                Encrypt.encryptFile(key, iv, new File(savePath), new File(encryptedPath));
+                //Encrypt.decryptFile(key, iv, new File(encryptedPath), new File(SAVE_DIR + File.separator + "test"));
                 
                 File originalFile = new File(savePath);
                 if (originalFile.exists()){
