@@ -9,6 +9,7 @@
 <html>
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
         <title>JSP Page</title>
     </head>
     <body>
@@ -38,18 +39,22 @@
             </div>
         </nav>
         <h1>Search Image</h1>
-        
-        <form method="post" action="searchImg">
-            <select name="attribute">
-                <option value="title">Title</option>
-                <option value="author">Author</option>
-                <option value="creator">Creator</option>
-                <option value="capturingdate">Capturing date</option>
-                <option value="storagedate">Storage date</option>
-            </select>
-            <input type="text" id="searchQuery" name="searchQuery" ><br>
-            <button type="submit">Search</button>
-        </form>
+        <div class="container d-flex align-items-center justify-content-center" style="height: 10vh;">
+            <form method="post" action="searchImg">
+                <div class="form-group">
+                    <select name="attribute" class="form-control">
+                        <option value="title">Title</option>
+                        <option value="author">Author</option>
+                        <option value="creator">Creator</option>
+                        <option value="capturingdate">Capturing date</option>
+                        <option value="storagedate">Storage date</option>
+                    </select>
+                    <input type="text" id="searchQuery" name="searchQuery" >
+                </div>
+                
+                <button type="submit" class="btn btn-primary">Search</button>
+            </form>
+        </div>
         
         <%
             ResultSet rs = (ResultSet) request.getSession().getAttribute("resultSet");

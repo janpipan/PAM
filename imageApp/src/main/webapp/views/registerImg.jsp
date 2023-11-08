@@ -27,12 +27,6 @@
                         <a class="nav-link" href="listImg">List Images</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="modifyImg">Modify Images</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="deleteImg">Delete Image</a>
-                    </li>
-                    <li class="nav-item">
                         <a class="nav-link" href="searchImg">Search Image</a>
                     </li>
                 </ul>
