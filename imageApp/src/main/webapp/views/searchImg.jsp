@@ -83,14 +83,14 @@
             %>
             <tr>
                 <td><%=img.getTitle()%></td>
-                <td><%=rs.getString("description")%></td>
-                <td><%=rs.getString("keywords")%></td>
-                <td><%=rs.getString("author")%></td>
-                <td><%=rs.getString("creator")%></td>
-                <td><%=rs.getString("capturingdate")%></td>
-                <td><%=rs.getString("storagedate")%></td>
-                <td><%=rs.getString("filename")%></td>
-                <td><%=rs.getString("encrypted")%></td>
+                <td><%=img.getDescription()%></td>
+                <td><%=img.getKeywords()%></td>
+                <td><%=img.getAuthor()%></td>
+                <td><%=img.getCreator()%></td>
+                <td><%=img.getCapturingdate()%></td>
+                <td><%=img.getStoragedate()%></td>
+                <td><%=img.getFilename()%></td>
+                <td><%=img.getEncrypted()%></td>
 
             </tr>
             <%
