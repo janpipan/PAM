@@ -41,6 +41,7 @@ public class listImg extends HttpServlet {
             throws ServletException, IOException {
         Connection connection = null;
         List<Image> imgList = new ArrayList<>();
+        List<Byte> images = new ArrayList<Byte>();
         response.setContentType("text/html;charset=UTF-8");
         try {
             String query;
@@ -71,6 +72,7 @@ public class listImg extends HttpServlet {
                 Boolean encrypted = rs.getBoolean("encrypted");
                 Image img = new Image(id, title, description, keywords, author, creator, capturingdate, storagedate, filename, encrypted);
                 imgList.add(img);
+                
             }
             
             request.getSession().setAttribute("imgList", imgList);
@@ -93,6 +95,7 @@ public class listImg extends HttpServlet {
             e.printStackTrace();
         }
     }
+    
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
     /**

@@ -34,22 +34,23 @@
             </div>
         </nav>
         <h1>ListImg</h1>
-        <div class='container'>
-            <table>
-                <tr>
-                    <th>Title</th>
-                    <th>Description</th>
-                    <th>Keywords</th>
-                    <th>Author</th>
-                    <th>Creator</th>
-                    <th>CapturingDate</th>
-                    <th>StorageDate</th>
-                    <th>Filename</th>
-                    <th>Encrypted</th>
-                    <th>Edit</th>
-                    <th>Delete</th>
-                    
-                </tr>
+        <div class="container mt-4">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Title</th>
+                        <th>Description</th>
+                        <th>Keywords</th>
+                        <th>Author</th>
+                        <th>Creator</th>
+                        <th>CapturingDate</th>
+                        <th>StorageDate</th>
+                        <th>Filename</th>
+                        <th>Encrypted</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
                 <%
                     List<Image> imgList =  (List<Image>) request.getSession().getAttribute("imgList");
                     for(Image img: imgList){
@@ -66,13 +67,13 @@
                         <td><%=img.getFilename()%></td>
                         <td><%=img.getEncrypted()%></td>
                         <td>
-                            <button>
-                                <a href="modifyImg?id=<%=img.getId()%>">Edit</a>
+                            <button class="btn btn-primary">
+                                <a href="modifyImg?id=<%=img.getId()%>" style="text-decoration: none; color: white;">Edit</a>
                             </button>
                         </td>
                         <td>
-                            <button>
-                                <a href="deleteImg?id=<%=img.getId()%>">Delete</a>
+                            <button class="btn btn-primary">
+                                <a href="deleteImg?id=<%=img.getId()%>" style="text-decoration: none; color: white;">Delete</a>
                             </button>
                         </td>
                     </tr>

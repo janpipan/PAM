@@ -59,39 +59,53 @@
         <%
             List<Image> imgList =  (List<Image>) request.getSession().getAttribute("searchList");
         %>
-        <table>
-             <tr>
-                <th>Title</th>
-                <th>Description</th>
-                <th>Keywords</th>
-                <th>Author</th>
-                <th>Creator</th>
-                <th>CapturingDate</th>
-                <th>StorageDate</th>
-                <th>Filename</th>
-                <th>Encrypted</th>
-
-            </tr>
-            <%
-                if (imgList != null) {
-                    for(Image img: imgList){
-            %>
-            <tr>
-                <td><%=img.getTitle()%></td>
-                <td><%=img.getDescription()%></td>
-                <td><%=img.getKeywords()%></td>
-                <td><%=img.getAuthor()%></td>
-                <td><%=img.getCreator()%></td>
-                <td><%=img.getCapturingdate()%></td>
-                <td><%=img.getStoragedate()%></td>
-                <td><%=img.getFilename()%></td>
-                <td><%=img.getEncrypted()%></td>
-
-            </tr>
-            <%
-                }
-            %>
-        </table>
+        <div class="container mt-4">
+            <table class="table table-bordered table-striped">
+                <thead class="thead-light">
+                    <tr>
+                       <th>Title</th>
+                       <th>Description</th>
+                       <th>Keywords</th>
+                       <th>Author</th>
+                       <th>Creator</th>
+                       <th>CapturingDate</th>
+                       <th>StorageDate</th>
+                       <th>Filename</th>
+                       <th>Encrypted</th>
+                       <th>Edit</th>
+                        <th>Delete</th>
+                   </tr>
+                </thead>
+                <%
+                    if (imgList != null) {
+                        for(Image img: imgList){
+                %>
+                <tr>
+                    <td><%=img.getTitle()%></td>
+                    <td><%=img.getDescription()%></td>
+                    <td><%=img.getKeywords()%></td>
+                    <td><%=img.getAuthor()%></td>
+                    <td><%=img.getCreator()%></td>
+                    <td><%=img.getCapturingdate()%></td>
+                    <td><%=img.getStoragedate()%></td>
+                    <td><%=img.getFilename()%></td>
+                    <td><%=img.getEncrypted()%></td>
+                    <td>
+                            <button class="btn btn-primary">
+                                <a href="modifyImg?id=<%=img.getId()%>" style="text-decoration: none; color: white;">Edit</a>
+                            </button>
+                        </td>
+                        <td>
+                            <button class="btn btn-primary">
+                                <a href="deleteImg?id=<%=img.getId()%>" style="text-decoration: none; color: white;">Delete</a>
+                            </button>
+                    </td>
+                </tr>
+                <%
+                    }
+                %>
+            </table>
+        </div>
         <%
             }
         %>

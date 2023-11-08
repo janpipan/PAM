@@ -83,7 +83,8 @@ public class Image implements Serializable {
         this.encrypted = encrypted;
         
     }
-
+    
+    
     public Integer getId() {
         return id;
     }
