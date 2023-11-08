@@ -54,6 +54,8 @@ public class searchImg extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
+        request.getSession().setAttribute("searchList", null);
         response.setContentType("text/html;charset=UTF-8");
         try {
             ViewManager.nextView(request, response, "/views/searchImg.jsp");
@@ -80,7 +82,7 @@ public class searchImg extends HttpServlet {
             throws ServletException, IOException {
         //processRequest(request, response);
         Connection connection = null;
-        List<Image> imgList = new ArrayList<>();
+        List<Image> searchList = new ArrayList<>();
         response.setContentType("text/html;charset=UTF-8");
         try {
             String query;
@@ -111,10 +113,10 @@ public class searchImg extends HttpServlet {
                 String filename = rs.getString("filename");
                 Boolean encrypted = rs.getBoolean("encrypted");
                 Image img = new Image(id, title, description, keywords, author, creator, capturingdate, storagedate, filename, encrypted);
-                imgList.add(img);
+                searchList.add(img);
             }
             
-            request.getSession().setAttribute("imgList", imgList);
+            request.getSession().setAttribute("searchList", searchList);
             
             
             statement.close();

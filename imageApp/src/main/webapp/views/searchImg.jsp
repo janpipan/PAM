@@ -3,7 +3,8 @@
     Created on : Oct 28, 2023, 7:14:25 PM
     Author     : alumne
 --%>
-<%@page import="java.sql.ResultSet"%>
+<%@page import="test.entity.Image"%>
+<%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -25,12 +26,6 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="listImg">List Images</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="modifyImg">Modify Images</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="deleteImg">Delete Image</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="searchImg">Search Image</a>
@@ -62,8 +57,7 @@
         </div>
         
         <%
-            List<Image> imgList =  (List<Image>) request.getSession().getAttribute("imgList");
-            if (imgList != null) {
+            List<Image> imgList =  (List<Image>) request.getSession().getAttribute("searchList");
         %>
         <table>
              <tr>
@@ -79,7 +73,8 @@
 
             </tr>
             <%
-                for(Image img: imgList){
+                if (imgList != null) {
+                    for(Image img: imgList){
             %>
             <tr>
                 <td><%=img.getTitle()%></td>
