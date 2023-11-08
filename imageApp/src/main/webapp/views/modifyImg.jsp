@@ -13,6 +13,31 @@
         <title>JSP Page</title>
     </head>
     <body>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Menu</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="registerImg">Register Image</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="listImg">List Images</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="modifyImg">Modify Images</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="deleteImg">Delete Image</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="searchImg">Search Image</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
         <%
             List<Image> imgList =  (List<Image>) request.getSession().getAttribute("imgList");
             for(Image img: imgList){

@@ -12,11 +12,31 @@
         <title>JSP Page</title>
     </head>
     <body>
-        <a href="registerImg">Register Image</a>
-        <a href="listImg">List Images</a>
-        <a href="modifyImg">Modify Images</a>
-        <a href="deleteImg">Delete Image</a>
-        <a href="searchImg">Search Image</a>
+        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+            <a class="navbar-brand" href="#">Menu</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="registerImg">Register Image</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="listImg">List Images</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="modifyImg">Modify Images</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="deleteImg">Delete Image</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="searchImg">Search Image</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
         
         
         Image deleted
