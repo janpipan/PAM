@@ -26,6 +26,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Date;
+import java.sql.Statement;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.crypto.SecretKey;
@@ -33,6 +34,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import test.model.ImageModel;
 import test.util.Encrypt;
+import test.util.PasswordHashing;
 
 /**
  *
@@ -80,10 +82,11 @@ public class registerImg extends HttpServlet {
         
         
         // encryption variables
-        byte[] key_salt = null;
-        String password_salt = null;
-        byte[] passwordHash = null;
+        byte[] keySalt = null;
+        byte[] passwordSalt = null;
         byte[] ivBytes = null;
+        String keyPassword = null;
+        String passwordHash = null;
         
         
         int read;
@@ -120,12 +123,12 @@ public class registerImg extends HttpServlet {
             
             
             if ("on".equals(req.getParameter("encrypt"))){
-                String keyPassword = req.getParameter("encryptPassword");
-                key_salt = Encrypt.generateSalt();
+                keyPassword = req.getParameter("encryptPassword");
+                keySalt = Encrypt.generateSalt();
                 fileName = "encrypted-" + fileName;
                 String encryptedPath = SAVE_DIR + File.separator + fileName;
 
-                SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(key_salt));
+                SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(keySalt));
                 IvParameterSpec iv = (IvParameterSpec) getServletContext().getAttribute("iv");
                 ivBytes = iv.getIV();
                 
@@ -145,7 +148,7 @@ public class registerImg extends HttpServlet {
      
             query = "INSERT INTO image(Title, Description, Keywords, Author, Creator, CapturingDate, Filename, Encrypted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             
-            statement = connection.prepareStatement(query);
+            statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
             statement.setString(1, (String) req.getParameter("title"));
             statement.setString(2, (String) req.getParameter("description"));
             statement.setString(3, (String) req.getParameter("keywords"));
@@ -164,17 +167,22 @@ public class registerImg extends HttpServlet {
             if (generatedKeys.next()) {
                 imageId = generatedKeys.getInt(1);
             }
-            
             // write image metadata
             statement.close();
+            // save encryption metadata 
             if ("on".equals(req.getParameter("encrypt"))){
                 query = "INSERT INTO encryption(Picture_id, Key_salt, Password_salt, Init_vector, Password_hash) VALUES (?, ?, ?, ?, ?)";
+                passwordSalt = Encrypt.generateSalt();
+                
+                passwordHash = PasswordHashing.hashPassword(keyPassword, passwordSalt);
                 statement = connection.prepareStatement(query);
                 statement.setInt(1, imageId);
-                statement.setBytes(2, key_salt);
-                statement.setString(3, password_salt);
+                statement.setBytes(2, keySalt);
+                statement.setBytes(3, passwordSalt);
                 statement.setBytes(4, ivBytes);
-                statement.setBytes(5, passwordHash);
+                statement.setString(5, passwordHash);
+                statement.executeUpdate();
+                statement.close();
             }
             
             
