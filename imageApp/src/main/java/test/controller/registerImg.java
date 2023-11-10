@@ -80,7 +80,8 @@ public class registerImg extends HttpServlet {
         
         
         // encryption variables
-        byte[] salt = null;
+        byte[] key_salt = null;
+        String password_salt = null;
         byte[] passwordHash = null;
         byte[] ivBytes = null;
         
@@ -120,11 +121,11 @@ public class registerImg extends HttpServlet {
             
             if ("on".equals(req.getParameter("encrypt"))){
                 String keyPassword = req.getParameter("encryptPassword");
-                salt = Encrypt.generateSalt();
+                key_salt = Encrypt.generateSalt();
                 fileName = "encrypted-" + fileName;
                 String encryptedPath = SAVE_DIR + File.separator + fileName;
 
-                SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(salt));
+                SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(key_salt));
                 IvParameterSpec iv = (IvParameterSpec) getServletContext().getAttribute("iv");
                 ivBytes = iv.getIV();
                 
@@ -167,12 +168,13 @@ public class registerImg extends HttpServlet {
             // write image metadata
             statement.close();
             if ("on".equals(req.getParameter("encrypt"))){
-                query = "INSERT INTO encryption(Picture_id, Salt, Init_vector, Password_hash)";
+                query = "INSERT INTO encryption(Picture_id, Key_salt, Password_salt, Init_vector, Password_hash) VALUES (?, ?, ?, ?, ?)";
                 statement = connection.prepareStatement(query);
                 statement.setInt(1, imageId);
-                statement.setBytes(2, salt);
-                statement.setBytes(3, salt);
-                statement.setBytes(4, passwordHash);
+                statement.setBytes(2, key_salt);
+                statement.setString(3, password_salt);
+                statement.setBytes(4, ivBytes);
+                statement.setBytes(5, passwordHash);
             }
             
             
