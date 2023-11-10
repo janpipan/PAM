@@ -4,6 +4,8 @@
     Author     : alumne
 --%>
 <%@page import="test.entity.Image"%>
+<%@page import="java.text.SimpleDateFormat"%>
+<%@page import="java.text.Format"%>
 <%@page import="java.util.List"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
@@ -35,35 +37,83 @@
         </nav>
         <%
             List<Image> imgList =  (List<Image>) request.getSession().getAttribute("imgList");
+            Format formatter = new SimpleDateFormat("yyyy-MM-dd");
+            
             for(Image img: imgList){
         %>
-        <form action="modifyImg" method="post" enctpye="multipart/form-data">
-            <input type="hidden" name="id" value="<%=img.getId()%>"/>
-            <label for="title">Title: </label>
-            <input type="text" id="title" name="title" value="<%=img.getTitle()%>" required><br>
-            <label for="description">Description: </label>
-            <input type="text" id="description" name="description" value="<%=img.getDescription()%>" required><br>
-            <label for="keywords">Keywords: </label>
-            <input type="text" id="keywords" name="keywords" value="<%=img.getKeywords()%>" required><br>
-            <label for="author">Author: </label>
-            <input type="text" id="author" name="author" value="<%=img.getAuthor()%>" required><br>
-            <label for="creator">Creator: </label>
-            <input type="text" id="creator" name="creator" value="<%=img.getCreator()%>" required><br>
-            <label for="capturingdate">Capture date: </label>
-            <input type="date" id="capturingdate" name="capturingdate" required><br>
-            <!--
-            <label for="fileName">File name: </label>
-            <input type="text" id="fileName" name="fileName" value="<%=img.getFilename()%>" required><br>
-            -->
-            <label for="encrypt">Encrypt: </label>
-            <input type="checkbox" id="encrypt" name="encrypt" ><br>
-            <input type="file" name="file" ><br>
-            <button type="submit">Upload</button>
+        <div class="container d-flex align-items-center justify-content-center" style="height: 80vh;">
             
-        </form>
+            <form action="modifyImg" method="post" enctpye="multipart/form-data">
+                
+                <!--
+                <input type="hidden" name="id" value="<%=img.getId()%>"/>
+                <label for="title">Title: </label>
+                <input type="text" id="title" name="title" value="<%=img.getTitle()%>" required><br>
+                <label for="description">Description: </label>
+                <input type="text" id="description" name="description" value="<%=img.getDescription()%>" required><br>
+                <label for="keywords">Keywords: </label>
+                <input type="text" id="keywords" name="keywords" value="<%=img.getKeywords()%>" required><br>
+                <label for="author">Author: </label>
+                <input type="text" id="author" name="author" value="<%=img.getAuthor()%>" required><br>
+                <label for="creator">Creator: </label>
+                <input type="text" id="creator" name="creator" value="<%=img.getCreator()%>" required><br>
+                <label for="capturingdate">Capture date: </label>
+                <input type="date" id="capturingdate" name="capturingdate" required><br>
+                
+                <label for="fileName">File name: </label>
+                <input type="text" id="fileName" name="fileName" value="<%=img.getFilename()%>" required><br>
+                
+                <label for="encrypt">Encrypt: </label>
+                <input type="checkbox" id="encrypt" name="encrypt" ><br>
+                <input type="file" name="file" ><br>
+                <button type="submit">Upload</button>
+                -->
+                <input type="hidden" name="id" value="<%=img.getId()%>"/>
+                 <div class="form-group">
+                    <label for="title">Title: </label>
+                    <input type="text" id="title" name="title" class="form-control" value="<%=img.getTitle()%>" required>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description: </label>
+                    <input type="text" id="description" name="description" class="form-control" value="<%=img.getDescription()%>" required>
+                </div>
+                <div class="form-group">
+                    <label for="keywords">Keywords: </label>
+                    <input type="text" id="keywords" name="keywords" class="form-control" value="<%=img.getKeywords()%>" required>
+                </div>
+                <div class="form-group">
+                    <label for="author">Author: </label>
+                    <input type="text" id="author" name="author" class="form-control" value="<%=img.getAuthor()%>" required>
+                </div>
+                <div class="form-group">
+                    <label for="creator">Creator: </label>
+                    <input type="text" id="creator" name="creator" class="form-control" value="<%=img.getCreator()%>" required>
+                </div>
+                <div class="form-group">
+                    <label for="capturingdate">Capture date: </label>
+                    <input type="date" id="capturingdate" name="capturingdate" class="form-control" value="<%=formatter.format(img.getCapturingdate())%>" required>
+                </div>
+                <div class="form-group">
+                    <label for="encrypt">Encrypt: </label>
+                    <input type="checkbox" id="encrypt" name="encrypt" >
+                </div>
+                <div class="form-group">
+
+                </div>
+                <div class="form-group"id="encryptInput" style="display:none;">
+                    <label for="encryptPassword">Encryption password</label>
+                    <input type="password" id="encryptPassword" name="encryptPassword" class="form-control">
+                </div>
+
+                <input type="file" name="file" ><br>
+                <button type="submit" class="btn btn-primary">Upload</button>
+
+            </form>
+        </div>
             
         <%
             }
         %>    
+        
     </body>
 </html>

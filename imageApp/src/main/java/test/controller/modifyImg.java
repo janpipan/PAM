@@ -87,6 +87,8 @@ public class modifyImg extends HttpServlet {
                 imgList.add(img);
             }
             
+            
+            
             //System.out.println(rs);
             request.getSession().setAttribute("imgList", imgList);
             statement.close();
@@ -129,15 +131,15 @@ public class modifyImg extends HttpServlet {
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
             
             // update image metadata
-            //query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ? WHERE id = " + request.getParameter("id"); 
-            query = "UPDATE Image SET Title = ? WHERE id = " + request.getParameter("id"); 
+            query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ? WHERE id = " + request.getParameter("id"); 
+            //query = "UPDATE Image SET Title = ? WHERE id = " + request.getParameter("id"); 
             System.out.println(query);
             statement = connection.prepareStatement(query);
             statement.setString(1, (String) request.getParameter("title"));
-            //statement.setString(2, (String) request.getParameter("description"));
-            //statement.setString(3, (String) request.getParameter("keywords"));
-            //statement.setString(4, (String) request.getParameter("author"));
-            //statement.setString(5, (String) request.getParameter("creator"));
+            statement.setString(2, (String) request.getParameter("description"));
+            statement.setString(3, (String) request.getParameter("keywords"));
+            statement.setString(4, (String) request.getParameter("author"));
+            statement.setString(5, (String) request.getParameter("creator"));
             //String date = request.getParameter("capturingdate");
             //String[] dateArray = date.split("-");
             //statement.setDate(6, new Date(Integer.parseInt(dateArray[0]),Integer.parseInt(dateArray[1]),Integer.parseInt(dateArray[2])));
@@ -156,7 +158,7 @@ public class modifyImg extends HttpServlet {
             
             response.setContentType("text/html;charset=UTF-8");
             try {
-                ViewManager.nextView(request, response, "/views/deleteImg.jsp");
+                ViewManager.nextView(request, response, "/views/editedImg.jsp");
             } catch (Exception e) {
                 e.printStackTrace();
                 RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");

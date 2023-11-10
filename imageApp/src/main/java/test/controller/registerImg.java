@@ -67,15 +67,22 @@ public class registerImg extends HttpServlet {
 
     protected void processPost(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-        
+        // db variables
         Connection connection = null;
         String query;
         PreparedStatement statement;
+        
+        // file variables
         Part filePart;
         String fileName, savePath;
         OutputStream out = null;
         InputStream filecontent = null;
         
+        
+        // encryption variables
+        byte[] salt = null;
+        byte[] passwordHash = null;
+        byte[] ivBytes = null;
         
         
         int read;
@@ -113,13 +120,14 @@ public class registerImg extends HttpServlet {
             
             if ("on".equals(req.getParameter("encrypt"))){
                 String keyPassword = req.getParameter("encryptPassword");
-                //String salt = new String(Encrypt.generateSalt());
-                String salt = "salt";
+                salt = Encrypt.generateSalt();
                 fileName = "encrypted-" + fileName;
                 String encryptedPath = SAVE_DIR + File.separator + fileName;
 
-                SecretKey key = Encrypt.getKeyFromPassword(keyPassword, salt);
+                SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(salt));
                 IvParameterSpec iv = (IvParameterSpec) getServletContext().getAttribute("iv");
+                ivBytes = iv.getIV();
+                
                 Encrypt.encryptFile(key, iv, new File(savePath), new File(encryptedPath));
                 //Encrypt.decryptFile(key, iv, new File(encryptedPath), new File(SAVE_DIR + File.separator + "test"));
                 
@@ -147,7 +155,27 @@ public class registerImg extends HttpServlet {
             statement.setBoolean(8, "on".equals(req.getParameter("encrypt")));
             statement.executeUpdate();  
             
+            //get key that was assigned to object
+            ResultSet generatedKeys = statement.getGeneratedKeys();
+            
+            int imageId = -1;
+            
+            if (generatedKeys.next()) {
+                imageId = generatedKeys.getInt(1);
+            }
+            
+            // write image metadata
             statement.close();
+            if ("on".equals(req.getParameter("encrypt"))){
+                query = "INSERT INTO encryption(Picture_id, Salt, Init_vector, Password_hash)";
+                statement = connection.prepareStatement(query);
+                statement.setInt(1, imageId);
+                statement.setBytes(2, salt);
+                statement.setBytes(3, salt);
+                statement.setBytes(4, passwordHash);
+            }
+            
+            
             connection.close();
             //System.out.println("New image meta data added");
             System.out.println("Image added successfuly");
