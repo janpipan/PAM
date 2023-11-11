@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -127,33 +128,33 @@ public class displayImg extends HttpServlet {
                 keyPassword = request.getParameter("password");
                 
                 // check if password hashes match
-                System.out.println(keySalt);
-                System.out.println(passwordSalt);
-                System.out.println(ivBytes);
-                System.out.println(passwordHash);
-                System.out.println(keyPassword);
                 byte[] hashedPassword = PasswordHashing.hashPassword(keyPassword, passwordSalt);
-                System.out.println("password hashing");
                 if (Arrays.equals(hashedPassword, passwordHash)){
 
                     try {
                         SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(keySalt));
                         IvParameterSpec iv = new IvParameterSpec(ivBytes);
-                        Encrypt.decryptFile(key, iv, new File(imagePath), new File(SAVE_DIR + File.separator + "temp.jpg"));
+                        Encrypt.decryptFile(key, iv, new File(imagePath), new File(SAVE_DIR + File.separator + "temp." + getFileExtension(Paths.get(imagePath))));
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
 
-                    try (InputStream is = new FileInputStream(SAVE_DIR + File.separator + "temp.jpg"); 
+                    try (InputStream is = new FileInputStream(SAVE_DIR + File.separator + "temp." + getFileExtension(Paths.get(imagePath))); 
                             OutputStream os = response.getOutputStream()) {
                         byte[] buffer = new byte[4096];
                         int bytesRead;
                         while ((bytesRead = is.read(buffer)) != -1) {
                             os.write(buffer,0, bytesRead);
                         }
-
-                        System.out.println("works");
+                    }
+                    // delete temp img
+                    try {
+                        Path path = Paths.get(SAVE_DIR + File.separator + "temp.jpg");
+                        Files.delete(path);
+                        System.out.println("Temp file deleted succesfully");
+                    } catch (IOException e) {
+                        System.err.println("Unable to delete the file:" + e.getMessage());
                     }
                 } else {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Incorrect password");
@@ -208,5 +209,14 @@ public class displayImg extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
-
+    
+    private static String getFileExtension(Path path) {
+        String fileName = path.getFileName().toString();
+        int dotIndex = fileName.lastIndexOf('.');
+        
+        if (dotIndex == -1 || dotIndex == fileName.length() -1){
+            return "";
+        }
+        return fileName.substring(dotIndex + 1);
+    }
 }
