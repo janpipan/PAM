@@ -64,14 +64,14 @@
                             if (img.getEncrypted()){
                         %>
                             <td>
-                                <div >Image is encrypted</div>
+                                <div id="encryptedText-<%=img.getId()%>">Image is encrypted</div>
                                 <img id="img-<%=img.getId()%>">
                             </td>
                         <%
                             }else {
                         %>
                         <td>
-                            <img src="displayImg?imageName=<%=img.getFilename()%>" style="max-height: 100px;" >
+                            <img src="displayImg?id=<%=img.getId()%>" style="max-height: 100px;" >
                         </td>
                         <%
                             }
@@ -103,12 +103,14 @@
                             <button onclick="loadImage(<%=img.getId()%>)" class="btn btn-primary">Submit password</button>
                         </td>
                         <%
-                            }
+                            } else {
                         %>
+                        <td></td>
                     </tr>
                     
 
                 <%
+                            }
                         }
                     }
                 %>
@@ -119,6 +121,7 @@
             function loadImage(id) {
                 
                 const password = document.getElementById("passwordInput-"+id).value;
+                const imgText = document.getElementById('encryptedText-'+id);
                 
                 
                 const xhr = new XMLHttpRequest();
@@ -126,12 +129,15 @@
                     if (xhr.readyState == 4) {
                         if (xhr.status == 200) {
                             const img = document.getElementById('img-'+id);
+                            imgText.innerHTML = "";
                             console.log(xhr.response);
                             const urlCreator = window.URL || window.webkitURL;
                             const imageUrl = urlCreator.createObjectURL(xhr.response);
                             img.src = imageUrl;
+                            img.height = 100;
                             
                         } else {
+                            imgText.innerHTML = "Incorrect password";
                             console.error("Incorrect password");
                         }
                     }

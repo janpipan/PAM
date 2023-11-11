@@ -23,6 +23,7 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.util.Arrays;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
@@ -92,6 +93,7 @@ public class displayImg extends HttpServlet {
             String imageId = request.getParameter("id");
             
             query = "SELECT filename, encrypted FROM Image WHERE Image.id = " + imageId;
+            System.out.println(query);
             statement = connection.prepareStatement(query);
             ResultSet rs = statement.executeQuery();
 
@@ -130,8 +132,9 @@ public class displayImg extends HttpServlet {
                 System.out.println(ivBytes);
                 System.out.println(passwordHash);
                 System.out.println(keyPassword);
-                System.out.println(passwordHash.equals(PasswordHashing.hashPassword(keyPassword, passwordSalt)));
-                if (PasswordHashing.hashPassword(keyPassword, passwordSalt).equals(passwordHash)){
+                byte[] hashedPassword = PasswordHashing.hashPassword(keyPassword, passwordSalt);
+                System.out.println("password hashing");
+                if (Arrays.equals(hashedPassword, passwordHash)){
 
                     try {
                         SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(keySalt));
@@ -152,6 +155,8 @@ public class displayImg extends HttpServlet {
 
                         System.out.println("works");
                     }
+                } else {
+                    response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Incorrect password");
                 }
             } else {
                 String contentType = getServletContext().getMimeType(imagePath);
