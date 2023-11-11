@@ -12,6 +12,9 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.Part;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -119,39 +122,71 @@ public class modifyImg extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        // db variables
         Connection connection = null;
-        response.setContentType("text/html;charset=UTF-8");
+        String query;
+        PreparedStatement statement;
+        
+        // file variables
+        Part filePart;
+        String fileName, savePath;
+        OutputStream out = null;
+        InputStream filecontent = null;
+        
+        
+        // encryption variables
+        byte[] keySalt = null;
+        byte[] passwordSalt = null;
+        byte[] ivBytes = null;
+        byte[] passwordHash = null;
+        String keyPassword = null;
+        
         try {
-            String query;
-            PreparedStatement statement;
             
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
             // create a database connection
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
             
-            // update image metadata
-            query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ? WHERE id = " + request.getParameter("id"); 
-            //query = "UPDATE Image SET Title = ? WHERE id = " + request.getParameter("id"); 
-            System.out.println(query);
+            
+            // get parameters
+            String title = request.getParameter("title");
+            String description = request.getParameter("description");
+            String keywords = request.getParameter("keywords");
+            String author = request.getParameter("author");
+            String creator = request.getParameter("creator");
+            filePart = request.getPart("file");
+            fileName = getFileName(filePart);
+            int imageId = Integer.parseInt(request.getParameter("id"));
+            String filename = null;
+            
+            // get image current metadata
+            query = "SELECT * FROM Image WHERE Image.Id = ?" ;
             statement = connection.prepareStatement(query);
-            statement.setString(1, (String) request.getParameter("title"));
-            statement.setString(2, (String) request.getParameter("description"));
-            statement.setString(3, (String) request.getParameter("keywords"));
-            statement.setString(4, (String) request.getParameter("author"));
-            statement.setString(5, (String) request.getParameter("creator"));
-            //String date = request.getParameter("capturingdate");
-            //String[] dateArray = date.split("-");
-            //statement.setDate(6, new Date(Integer.parseInt(dateArray[0]),Integer.parseInt(dateArray[1]),Integer.parseInt(dateArray[2])));
-            //statement.setString(7, request.getParameter("creator"));
-            //statement.setBoolean(8, "on".equals(request.getParameter("encrypt")));
-            System.out.println("Executing");
+            statement.setInt(1,imageId);
+            ResultSet rs = statement.executeQuery();
+            
+            while (rs.next()){
+                filename = rs.getString("filename");
+            }
+            
+            if (filename != null && !filename.equals(fileName)){
+                
+            }
+            
+            // update image metadata
+            query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ? WHERE id = ?"; 
+            
+            statement = connection.prepareStatement(query);
+            statement.setString(1, title);
+            statement.setString(2, description);
+            statement.setString(3, keywords);
+            statement.setString(4,  author);
+            statement.setString(5, creator);
+            statement.setInt(6, imageId);
             statement.executeUpdate();
-            System.out.println("Executed");
             statement.close();
-            System.out.println("statement closed");
             connection.close();
-            System.out.println("connection closed");
             
             System.out.println("modified");
             
@@ -180,5 +215,16 @@ public class modifyImg extends HttpServlet {
     public String getServletInfo() {
         return "Short description";
     }// </editor-fold>
+    
+    private String getFileName(Part part){
+        String contentDisp = part.getHeader("content-disposition");
+        String[] items = contentDisp.split(";");
+        for (String s : items){
+            if (s.trim().startsWith("filename")){
+                return s.substring(s.indexOf("=") + 2, s.length()-1);
+            }
+        }
+        return "";
+    }
 
 }

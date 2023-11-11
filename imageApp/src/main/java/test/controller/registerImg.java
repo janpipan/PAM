@@ -120,10 +120,6 @@ public class registerImg extends HttpServlet {
                 out.write(bytes, 0, read);
             }
             
-            
-            
-            
-            
             if ("on".equals(req.getParameter("encrypt"))){
                 keyPassword = req.getParameter("encryptPassword");
                 keySalt = Encrypt.generateSalt();
@@ -144,9 +140,6 @@ public class registerImg extends HttpServlet {
                 
             } 
             
-            
-            
-            System.out.println("New file" + fileName + " created at " + SAVE_DIR);
      
             query = "INSERT INTO image(Title, Description, Keywords, Author, Creator, CapturingDate, Filename, Encrypted) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
             
@@ -177,10 +170,6 @@ public class registerImg extends HttpServlet {
                 passwordSalt = Encrypt.generateSalt();
                 
                 passwordHash = PasswordHashing.hashPassword(keyPassword, passwordSalt);
-                System.out.println(keySalt);
-                System.out.println(passwordSalt);
-                System.out.println(ivBytes);
-                System.out.println(passwordHash);
                 
                 statement = connection.prepareStatement(query);
                 statement.setInt(1, imageId);

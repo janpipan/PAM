@@ -40,34 +40,12 @@
             Format formatter = new SimpleDateFormat("yyyy-MM-dd");
             
             for(Image img: imgList){
+            System.out.println(img.getEncrypted());
         %>
         <div class="container d-flex align-items-center justify-content-center" style="height: 80vh;">
             
             <form action="modifyImg" method="post" enctpye="multipart/form-data">
                 
-                <!--
-                <input type="hidden" name="id" value="<%=img.getId()%>"/>
-                <label for="title">Title: </label>
-                <input type="text" id="title" name="title" value="<%=img.getTitle()%>" required><br>
-                <label for="description">Description: </label>
-                <input type="text" id="description" name="description" value="<%=img.getDescription()%>" required><br>
-                <label for="keywords">Keywords: </label>
-                <input type="text" id="keywords" name="keywords" value="<%=img.getKeywords()%>" required><br>
-                <label for="author">Author: </label>
-                <input type="text" id="author" name="author" value="<%=img.getAuthor()%>" required><br>
-                <label for="creator">Creator: </label>
-                <input type="text" id="creator" name="creator" value="<%=img.getCreator()%>" required><br>
-                <label for="capturingdate">Capture date: </label>
-                <input type="date" id="capturingdate" name="capturingdate" required><br>
-                
-                <label for="fileName">File name: </label>
-                <input type="text" id="fileName" name="fileName" value="<%=img.getFilename()%>" required><br>
-                
-                <label for="encrypt">Encrypt: </label>
-                <input type="checkbox" id="encrypt" name="encrypt" ><br>
-                <input type="file" name="file" ><br>
-                <button type="submit">Upload</button>
-                -->
                 <input type="hidden" name="id" value="<%=img.getId()%>"/>
                  <div class="form-group">
                     <label for="title">Title: </label>
@@ -95,14 +73,26 @@
                 </div>
                 <div class="form-group">
                     <label for="encrypt">Encrypt: </label>
+                    <%
+                        if(img.getEncrypted()) {
+                    %>
+                    <input type="checkbox" id="encrypt" name="encrypt" checked>
+                    <%
+                        }else {
+                    %>
                     <input type="checkbox" id="encrypt" name="encrypt" >
+                    <%
+                        }
+                    %>
                 </div>
                 <div class="form-group">
 
                 </div>
                 <div class="form-group"id="encryptInput" style="display:none;">
-                    <label for="encryptPassword">Encryption password</label>
-                    <input type="password" id="encryptPassword" name="encryptPassword" class="form-control">
+                    <label for="encryptPassword">Old encryption password:</label>
+                    <input type="password" id="encryptPasswordOld" name="encryptPasswordOld" class="form-control">
+                    <label for="encryptPassword">New encryption password:</label>
+                    <input type="password" id="encryptPasswordNew" name="encryptPasswordNew" class="form-control">
                 </div>
 
                 <input type="file" name="file" ><br>
@@ -115,5 +105,28 @@
             }
         %>    
         
+        
+        <script>
+            
+    
+            const encryptCheckbox = document.getElementById('encrypt');
+            const encryptInput = document.getElementById('encryptInput');
+            
+            if (encryptCheckbox.checked) {
+                encryptInput.style.display = 'block';
+            }
+            
+            encryptCheckbox.addEventListener('change', function() {
+                if (encryptCheckbox.checked) {
+                    encryptInput.style.display = 'block';
+                } else {
+                    encryptInput.style.display = 'none';
+                }
+            });
+            
+        </script>
     </body>
+    
+    
+   
 </html>

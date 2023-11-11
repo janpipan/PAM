@@ -12,6 +12,10 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -25,7 +29,7 @@ import test.entity.Image;
  */
 @WebServlet(name = "deleteImg", urlPatterns = {"/deleteImg"})
 public class deleteImg extends HttpServlet {
-
+    private static final String SAVE_DIR = "/home/alumne/imgs";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -65,9 +69,9 @@ public class deleteImg extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         Connection connection = null;
-        response.setContentType("text/html;charset=UTF-8");
+        String query;
+        PreparedStatement statement;
         try {
-            String query;
             
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
@@ -77,6 +81,24 @@ public class deleteImg extends HttpServlet {
             
             // get image id
             int imageId = Integer.parseInt(request.getParameter("id"));
+            
+            // get image path
+            query = "SELECT filename FROM Image WHERE Image.id = ?";
+            statement = connection.prepareStatement(query);
+            statement.setInt(1, imageId);
+            
+            ResultSet rs = statement.executeQuery();  
+            
+            
+            String filePath = null;
+            String fileName = null;
+            while (rs.next()){
+                fileName = rs.getString("filename");
+            }
+            if (fileName != null) {
+                filePath = SAVE_DIR + File.separator + fileName;
+            }
+            
             
             query = "DELETE FROM Encryption WHERE Encryption.Picture_id = ?" ;
             try (PreparedStatement deleteEncryptionStatement = connection.prepareStatement(query)){
@@ -90,6 +112,17 @@ public class deleteImg extends HttpServlet {
                 deleteImageStatement.setInt(1, imageId);
                 deleteImageStatement.executeUpdate();
             }
+            if (filePath != null){
+                try {
+                    Path path = Paths.get(filePath);
+                    Files.delete(path);
+                    System.out.println("File deleted succesfully");
+                } catch (IOException e) {
+                    System.err.println("Unable to delete the file:" + e.getMessage());
+                }
+            }
+            
+            
             connection.close();
             
             

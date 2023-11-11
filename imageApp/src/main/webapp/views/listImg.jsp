@@ -34,7 +34,7 @@
             </div>
         </nav>
         <h1>ListImg</h1>
-        <div class="container mt-4">
+        <div class="container mt-4 d-flex align-items-center justify-content-center">
             <table class="table table-bordered table-striped">
                 <thead class="thead-light">
                     <tr>

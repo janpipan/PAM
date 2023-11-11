@@ -77,28 +77,7 @@
         </div>
         
         <script>
-            /*
-            const checkbox = document.getElementById('encrypt');
-            const form = document.getElementById('registerImg');
             
-            function addTextInput() {
-                const input = document.createElement('input');
-                input.type = 'text';
-                input.name = 'dynamicInput';
-                input.placeholder = 'Password';
-                form.appendChild(input);
-            }
-            
-            checkbox.addEventListener('change', function() {
-               if(checkbox.checked) {
-                   addTextInput();
-               } else {
-                   const dynamicInput = form.querySelector('input[name="dynamicInput"]');
-                   if (dynamicInput){
-                       form.removeChild(dynamicInput);
-                   }
-               }
-            });*/
     
             const encryptCheckbox = document.getElementById('encrypt');
             const encryptInput = document.getElementById('encryptInput');
