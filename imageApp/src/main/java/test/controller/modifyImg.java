@@ -27,8 +27,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import test.entity.Image;
+import test.util.PasswordHashing;
 
 /**
  *
@@ -137,6 +139,7 @@ public class modifyImg extends HttpServlet {
         Connection connection = null;
         String query;
         PreparedStatement statement;
+        ResultSet rs;
         
         // file variables
         Part filePart;
@@ -168,91 +171,121 @@ public class modifyImg extends HttpServlet {
             String author = request.getParameter("author");
             String creator = request.getParameter("creator");
             filePart = request.getPart("file");
+            String encryptPasswordCurrent = request.getParameter("encryptPasswordCurrent");
             int imageId = Integer.parseInt(request.getParameter("id"));
             
-            if (filePart != null) {
-                newFileName = getFileName(filePart);
-                String fileName = null;
+            // if image was encrypted
+            if (encryptPasswordCurrent != null) {
                 
-                // get image current metadata
-                query = "SELECT * FROM Image WHERE Image.Id = ?" ;
+                
+                // get encryption metadata
+                query = "SELECT * FROM Encryption WHERE Encryption.Picture_id = " + imageId;
+            
                 statement = connection.prepareStatement(query);
-                statement.setInt(1,imageId);
-                ResultSet rs = statement.executeQuery();
+
+                rs = statement.executeQuery();
                 
                 
-                String filePath = null;
-                while (rs.next()){
-                    fileName = rs.getString("filename");
+                //parse encryption params
+                while(rs.next()) {
+                    keySalt = rs.getBytes("key_salt");
+                    passwordSalt = rs.getBytes("password_salt");
+                    ivBytes = rs.getBytes("init_vector");
+                    passwordHash = rs.getBytes("password_hash");
                 }
+                statement.close();
                 
-                if (fileName != null){
-                    filePath = SAVE_DIR + File.separator + fileName;
-                    
+                // check if password hashes match
+                byte[] hashedPassword = PasswordHashing.hashPassword(encryptPasswordCurrent, passwordSalt);
+                if (!Arrays.equals(hashedPassword, passwordHash)){
                     try {
-                        Path path = Paths.get(filePath);
-                        Files.delete(path);
-                        System.out.println("File deleted succesfully");
-                    } catch (IOException e) {
-                        System.err.println("Unable to delete the file:" + e.getMessage());
+                        ViewManager.nextView(request, response, "/views/error.jsp");
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                        RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                        if (dispatcher != null) {
+                            dispatcher.forward(request,response);
+                        }
                     }
-                }
-                
-                Path p = Paths.get(newFileName);
-                newFileName = p.getFileName().toString();
-                savePath = SAVE_DIR + File.separator + newFileName;
-                
-                out = new FileOutputStream(new File(savePath));
-                filecontent = filePart.getInputStream();
+                    // if encryption password is correct
+                } else {
+                    // check if user provided new file 
+                    if (filePart != null) {
+                        newFileName = getFileName(filePart);
+                        String fileName = null;
+
+                        // get image current metadata
+                        query = "SELECT * FROM Image WHERE Image.Id = ?" ;
+                        statement = connection.prepareStatement(query);
+                        statement.setInt(1,imageId);
+                        rs = statement.executeQuery();
+
+
+                        String filePath = null;
+                        while (rs.next()){
+                            fileName = rs.getString("filename");
+                        }
+                        
+                        // delete old file 
+                        if (fileName != null){
+                            filePath = SAVE_DIR + File.separator + fileName;
+
+                            try {
+                                Path path = Paths.get(filePath);
+                                Files.delete(path);
+                                System.out.println("File deleted succesfully");
+                            } catch (IOException e) {
+                                System.err.println("Unable to delete the file:" + e.getMessage());
+                            }
+                        }
+                        // save new file 
+                        Path p = Paths.get(newFileName);
+                        newFileName = p.getFileName().toString();
+                        savePath = SAVE_DIR + File.separator + newFileName;
+
+                        out = new FileOutputStream(new File(savePath));
+                        filecontent = filePart.getInputStream();
+
+
+                        out = new FileOutputStream(new File(savePath));
+                        filecontent = filePart.getInputStream();
+
+                        final byte[] bytes = new byte[1024];
+
+                        while ((read = filecontent.read(bytes)) != -1) {
+                            out.write(bytes, 0, read);
+                        }
+                    }
                     
-                
-                out = new FileOutputStream(new File(savePath));
-                filecontent = filePart.getInputStream();
-
-                final byte[] bytes = new byte[1024];
-
-                while ((read = filecontent.read(bytes)) != -1) {
-                    out.write(bytes, 0, read);
+                    
                 }
-                
-                
-                
-            }
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            
-            // update image metadata
-            query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ? WHERE id = ?"; 
-            
-            statement = connection.prepareStatement(query);
-            statement.setString(1, title);
-            statement.setString(2, description);
-            statement.setString(3, keywords);
-            statement.setString(4,  author);
-            statement.setString(5, creator);
-            statement.setInt(6, imageId);
-            statement.executeUpdate();
-            statement.close();
-            connection.close();
-            
-            System.out.println("modified");
-            
-            
-            response.setContentType("text/html;charset=UTF-8");
-            try {
-                ViewManager.nextView(request, response, "/views/editedImg.jsp");
-            } catch (Exception e) {
-                e.printStackTrace();
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
-                if (dispatcher != null) {
-                    dispatcher.forward(request,response);
+            } else {
+                // update image metadata
+                query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ? WHERE id = ?"; 
+
+                statement = connection.prepareStatement(query);
+                statement.setString(1, title);
+                statement.setString(2, description);
+                statement.setString(3, keywords);
+                statement.setString(4,  author);
+                statement.setString(5, creator);
+                statement.setInt(6, imageId);
+                statement.executeUpdate();
+                statement.close();
+                connection.close();
+
+                System.out.println("modified");
+
+
+                response.setContentType("text/html;charset=UTF-8");
+                try {
+                    ViewManager.nextView(request, response, "/views/editedImg.jsp");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    RequestDispatcher dispatcher = request.getRequestDispatcher("/error.jsp");
+                    if (dispatcher != null) {
+                        dispatcher.forward(request,response);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -280,5 +313,6 @@ public class modifyImg extends HttpServlet {
         }
         return "";
     }
-
+    
+    private void updateMetaData(String )
 }

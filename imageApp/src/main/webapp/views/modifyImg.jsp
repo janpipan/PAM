@@ -89,9 +89,16 @@
 
                 </div>
                 <div class="form-group"id="encryptInput" style="display:none;">
-                    <label for="encryptPassword">Old encryption password:</label>
-                    <input type="password" id="encryptPasswordOld" name="encryptPasswordOld" class="form-control">
-                    <label for="encryptPassword">New encryption password:</label>
+                    <%
+                        if (img.getEncrypted()) {
+                        
+                    %>
+                    <label for="encryptPasswordCurrent">To modify image enter encryption password:</label>
+                    <input type="password" id="encryptPasswordCurrent" name="encryptPasswordCurrent" class="form-control">
+                    <%
+                        }
+                    %>
+                    <label for="encryptPasswordNew">New encryption password:</label>
                     <input type="password" id="encryptPasswordNew" name="encryptPasswordNew" class="form-control">
                 </div>
                 <div>
