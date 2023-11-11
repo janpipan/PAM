@@ -20,6 +20,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -85,8 +86,9 @@ public class registerImg extends HttpServlet {
         byte[] keySalt = null;
         byte[] passwordSalt = null;
         byte[] ivBytes = null;
+        byte[] passwordHash = null;
         String keyPassword = null;
-        String passwordHash = null;
+        
         
         
         int read;
@@ -175,12 +177,17 @@ public class registerImg extends HttpServlet {
                 passwordSalt = Encrypt.generateSalt();
                 
                 passwordHash = PasswordHashing.hashPassword(keyPassword, passwordSalt);
+                System.out.println(keySalt);
+                System.out.println(passwordSalt);
+                System.out.println(ivBytes);
+                System.out.println(passwordHash);
+                
                 statement = connection.prepareStatement(query);
                 statement.setInt(1, imageId);
-                statement.setBytes(2, keySalt);
+                statement.setBytes(2,keySalt);
                 statement.setBytes(3, passwordSalt);
                 statement.setBytes(4, ivBytes);
-                statement.setString(5, passwordHash);
+                statement.setBytes(5, passwordHash);
                 statement.executeUpdate();
                 statement.close();
             }

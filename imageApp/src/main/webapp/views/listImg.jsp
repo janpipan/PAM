@@ -99,8 +99,8 @@
                             if (img.getEncrypted()){
                         %>
                         <td>
-                            <input type="password" id="passwordInput" placeholder="Enter password">
-                            <button onclick="loadImage('<%=img.getFilename()%>',<%=img.getId()%>)" class="btn btn-primary">Submit password</button>
+                            <input type="password" id="passwordInput-<%=img.getId()%>" placeholder="Enter password">
+                            <button onclick="loadImage(<%=img.getId()%>)" class="btn btn-primary">Submit password</button>
                         </td>
                         <%
                             }
@@ -116,9 +116,10 @@
         </div>
             
         <script>
-            function loadImage(filename, id) {
+            function loadImage(id) {
                 
-                const password = document.getElementById("passwordInput").value;
+                const password = document.getElementById("passwordInput-"+id).value;
+                
                 
                 const xhr = new XMLHttpRequest();
                 xhr.onreadystatechange = function () {
@@ -135,7 +136,7 @@
                         }
                     }
                 };
-                const reqString = 'displayImg?imageName=' + filename + '&password=' + password;
+                const reqString = 'displayImg?id=' + id + '&password=' + password;
                 xhr.open("GET", reqString);
                 xhr.responseType = "blob";
                 xhr.send();

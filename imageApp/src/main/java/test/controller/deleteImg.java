@@ -68,7 +68,6 @@ public class deleteImg extends HttpServlet {
         response.setContentType("text/html;charset=UTF-8");
         try {
             String query;
-            PreparedStatement statement;
             
             Class.forName("org.apache.derby.jdbc.ClientDriver");
 
@@ -76,18 +75,21 @@ public class deleteImg extends HttpServlet {
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
                   
             
-            // get image 
-            //query = "SELECT * FROM Image WHERE Image.id = " + request.getParameter("id");
-            //statement = connection.prepareStatement(query);
-            //ResultSet rs = statement.executeQuery();
+            // get image id
+            int imageId = Integer.parseInt(request.getParameter("id"));
             
-            //rs.next();
-            //request.getSession().setAttribute("resultSet", rs);
-            
+            query = "DELETE FROM Encryption WHERE Encryption.Picture_id = ?" ;
+            try (PreparedStatement deleteEncryptionStatement = connection.prepareStatement(query)){
+                deleteEncryptionStatement.setInt(1, imageId);
+                deleteEncryptionStatement.executeUpdate();
+            }
+           
             // delete image
-            query = "DELETE FROM Image WHERE Image.id = " + request.getParameter("id");
-            statement = connection.prepareStatement(query);
-            statement.execute();
+            query = "DELETE FROM Image WHERE Image.id = ?";
+            try (PreparedStatement deleteImageStatement = connection.prepareStatement(query)){
+                deleteImageStatement.setInt(1, imageId);
+                deleteImageStatement.executeUpdate();
+            }
             connection.close();
             
             

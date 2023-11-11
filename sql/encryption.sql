@@ -4,7 +4,7 @@ CREATE TABLE encryption (
     key_salt BLOB,
     password_salt BLOB,
     init_vector BLOB,
-    password_hash VARCHAR(255),
+    password_hash BLOB,
     FOREIGN KEY (picture_id) REFERENCES Image(id),
     PRIMARY KEY (Id)
-)
+);

@@ -16,12 +16,18 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import test.util.Encrypt;
+import test.util.PasswordHashing;
 
 /**
  *
@@ -60,49 +66,116 @@ public class displayImg extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
         
-        //System.out.println("test");
-        String imageName = request.getParameter("imageName");
-        String keyPassword = request.getParameter("password");
-        String imagePath = "/home/alumne/imgs/" + imageName;
-        String salt = "salt";
+        //db variables
+        Connection connection = null;
+        String query = null;
+        PreparedStatement statement = null;
+        
+        // file variables
+        String imageName = null;
+        Boolean encrypted = false;
+        
+        //encryption variables
+        byte[] keySalt = null;
+        byte[] passwordSalt = null;
+        byte[] ivBytes = null;
+        String keyPassword = null;
+        byte[] passwordHash = null;
         
         
-        
-        String contentType = getServletContext().getMimeType(imagePath);
-        response.setContentType(contentType);
-        
-        if (keyPassword != null) {
+        try {
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            // create a database connection
+            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
             
-       
-            try {
-                SecretKey key = Encrypt.getKeyFromPassword(keyPassword, salt);
-                IvParameterSpec iv = (IvParameterSpec) getServletContext().getAttribute("iv");
-                Encrypt.decryptFile(key, iv, new File(imagePath), new File(SAVE_DIR + File.separator + "temp"));
-            } catch (Exception e) {
-                e.printStackTrace();
+            String imageId = request.getParameter("id");
+            
+            query = "SELECT filename, encrypted FROM Image WHERE Image.id = " + imageId;
+            statement = connection.prepareStatement(query);
+            ResultSet rs = statement.executeQuery();
+
+            while (rs.next()){
+                imageName = rs.getString("filename");
+                encrypted = rs.getBoolean("encrypted");
+            }
+            
+            String imagePath = "/home/alumne/imgs/" + imageName;
+            
+            statement.close();
+            
+            // if encrypted check if password is correct
+            if (encrypted) {
+                query = "SELECT * FROM Encryption WHERE Encryption.Picture_id = " + imageId;
+            
+                statement = connection.prepareStatement(query);
+
+                rs = statement.executeQuery();
+                
+                
+                //parse encryption params
+                while(rs.next()) {
+                    keySalt = rs.getBytes("key_salt");
+                    passwordSalt = rs.getBytes("password_salt");
+                    ivBytes = rs.getBytes("init_vector");
+                    passwordHash = rs.getBytes("password_hash");
+                }
+                statement.close();
+
+                keyPassword = request.getParameter("password");
+                
+                // check if password hashes match
+                System.out.println(keySalt);
+                System.out.println(passwordSalt);
+                System.out.println(ivBytes);
+                System.out.println(passwordHash);
+                System.out.println(keyPassword);
+                System.out.println(passwordHash.equals(PasswordHashing.hashPassword(keyPassword, passwordSalt)));
+                if (PasswordHashing.hashPassword(keyPassword, passwordSalt).equals(passwordHash)){
+
+                    try {
+                        SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(keySalt));
+                        IvParameterSpec iv = new IvParameterSpec(ivBytes);
+                        Encrypt.decryptFile(key, iv, new File(imagePath), new File(SAVE_DIR + File.separator + "temp.jpg"));
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+
+
+                    try (InputStream is = new FileInputStream(SAVE_DIR + File.separator + "temp.jpg"); 
+                            OutputStream os = response.getOutputStream()) {
+                        byte[] buffer = new byte[4096];
+                        int bytesRead;
+                        while ((bytesRead = is.read(buffer)) != -1) {
+                            os.write(buffer,0, bytesRead);
+                        }
+
+                        System.out.println("works");
+                    }
+                }
+            } else {
+                String contentType = getServletContext().getMimeType(imagePath);
+                response.setContentType(contentType);
+
+                try (InputStream is = new FileInputStream(imagePath); 
+                        OutputStream os = response.getOutputStream()) {
+                    byte[] buffer = new byte[4096];
+                    int bytesRead;
+                    while ((bytesRead = is.read(buffer)) != -1) {
+                        os.write(buffer,0, bytesRead);
+                    }
+                }
             }
 
 
-            try (InputStream is = new FileInputStream(SAVE_DIR + File.separator + "temp"); 
-                    OutputStream os = response.getOutputStream()) {
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    os.write(buffer,0, bytesRead);
-                }
+
             
-                System.out.println("works");
-            }
-        } else {
-            try (InputStream is = new FileInputStream(imagePath); 
-                    OutputStream os = response.getOutputStream()) {
-                byte[] buffer = new byte[4096];
-                int bytesRead;
-                while ((bytesRead = is.read(buffer)) != -1) {
-                    os.write(buffer,0, bytesRead);
-                }
-            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        
+        
         
         
     }

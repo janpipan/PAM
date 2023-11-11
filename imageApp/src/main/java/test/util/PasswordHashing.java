@@ -17,11 +17,11 @@ import javax.crypto.spec.PBEKeySpec;
 public class PasswordHashing {
     
     
-    public static String hashPassword(String password, byte[] salt) throws Exception{
+    public static byte[] hashPassword(String password, byte[] salt) throws Exception{
        KeySpec spec = new PBEKeySpec(password.toCharArray(), salt, 65536, 128);
        SecretKeyFactory f = SecretKeyFactory.getInstance("PBKDF2WithHmacSHA1");
        byte[] hash = f.generateSecret(spec).getEncoded();
-       return String.valueOf(hash);
+       return hash;
     }
     
 }
