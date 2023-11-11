@@ -44,7 +44,7 @@
         %>
         <div class="container d-flex align-items-center justify-content-center" style="height: 80vh;">
             
-            <form action="modifyImg" method="post" enctpye="multipart/form-data">
+            <form action="modifyImg" method="post" enctype="multipart/form-data">
                 
                 <input type="hidden" name="id" value="<%=img.getId()%>"/>
                  <div class="form-group">
@@ -94,8 +94,13 @@
                     <label for="encryptPassword">New encryption password:</label>
                     <input type="password" id="encryptPasswordNew" name="encryptPasswordNew" class="form-control">
                 </div>
-
-                <input type="file" name="file" ><br>
+                <div>
+                    <label for="oldFileName">Filename:</label>
+                    <input type="text" id="oldFileName" name="oldFileName" value="<%=img.getFilename()%>" readonly>
+                    <label for="file">Replace file:</label>
+                    <input type="file" name="file" value="<%=img.getFilename()%>">
+                </div>
+                
                 <button type="submit" class="btn btn-primary">Upload</button>
 
             </form>

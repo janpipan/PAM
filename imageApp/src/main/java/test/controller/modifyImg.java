@@ -8,13 +8,19 @@ import jakarta.servlet.RequestDispatcher;
 import java.io.IOException;
 import java.io.PrintWriter;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.Part;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
@@ -29,8 +35,13 @@ import test.entity.Image;
  * @author alumne
  */
 @WebServlet(name = "modifyImg", urlPatterns = {"/modifyImg"})
+@MultipartConfig(fileSizeThreshold=1024*1024*2,
+                 maxFileSize=1024*1024*10,
+                 maxRequestSize=1024*1024*50,
+                 location="/"
+        )
 public class modifyImg extends HttpServlet {
-
+    private static final String SAVE_DIR = "/home/alumne/imgs";
     /**
      * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
      * methods.
@@ -129,9 +140,10 @@ public class modifyImg extends HttpServlet {
         
         // file variables
         Part filePart;
-        String fileName, savePath;
+        String newFileName, savePath;
         OutputStream out = null;
         InputStream filecontent = null;
+        int read;
         
         
         // encryption variables
@@ -156,23 +168,65 @@ public class modifyImg extends HttpServlet {
             String author = request.getParameter("author");
             String creator = request.getParameter("creator");
             filePart = request.getPart("file");
-            fileName = getFileName(filePart);
             int imageId = Integer.parseInt(request.getParameter("id"));
-            String filename = null;
             
-            // get image current metadata
-            query = "SELECT * FROM Image WHERE Image.Id = ?" ;
-            statement = connection.prepareStatement(query);
-            statement.setInt(1,imageId);
-            ResultSet rs = statement.executeQuery();
-            
-            while (rs.next()){
-                filename = rs.getString("filename");
-            }
-            
-            if (filename != null && !filename.equals(fileName)){
+            if (filePart != null) {
+                newFileName = getFileName(filePart);
+                String fileName = null;
+                
+                // get image current metadata
+                query = "SELECT * FROM Image WHERE Image.Id = ?" ;
+                statement = connection.prepareStatement(query);
+                statement.setInt(1,imageId);
+                ResultSet rs = statement.executeQuery();
+                
+                
+                String filePath = null;
+                while (rs.next()){
+                    fileName = rs.getString("filename");
+                }
+                
+                if (fileName != null){
+                    filePath = SAVE_DIR + File.separator + fileName;
+                    
+                    try {
+                        Path path = Paths.get(filePath);
+                        Files.delete(path);
+                        System.out.println("File deleted succesfully");
+                    } catch (IOException e) {
+                        System.err.println("Unable to delete the file:" + e.getMessage());
+                    }
+                }
+                
+                Path p = Paths.get(newFileName);
+                newFileName = p.getFileName().toString();
+                savePath = SAVE_DIR + File.separator + newFileName;
+                
+                out = new FileOutputStream(new File(savePath));
+                filecontent = filePart.getInputStream();
+                    
+                
+                out = new FileOutputStream(new File(savePath));
+                filecontent = filePart.getInputStream();
+
+                final byte[] bytes = new byte[1024];
+
+                while ((read = filecontent.read(bytes)) != -1) {
+                    out.write(bytes, 0, read);
+                }
+                
+                
                 
             }
+            
+            
+            
+            
+            
+            
+            
+            
+            
             
             // update image metadata
             query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ? WHERE id = ?"; 
