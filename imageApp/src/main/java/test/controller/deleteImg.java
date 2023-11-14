@@ -22,6 +22,7 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import test.entity.Image;
+import test.util.FileUtil;
 
 /**
  *
@@ -113,13 +114,7 @@ public class deleteImg extends HttpServlet {
                 deleteImageStatement.executeUpdate();
             }
             if (filePath != null){
-                try {
-                    Path path = Paths.get(filePath);
-                    Files.delete(path);
-                    System.out.println("File deleted succesfully");
-                } catch (IOException e) {
-                    System.err.println("Unable to delete the file:" + e.getMessage());
-                }
+                FileUtil.deleteFile(filePath);
             }
             
             

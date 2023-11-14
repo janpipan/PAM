@@ -105,7 +105,7 @@
                     <label for="oldFileName">Filename:</label>
                     <input type="text" id="oldFileName" name="oldFileName" value="<%=img.getFilename()%>" readonly>
                     <label for="file">Replace file:</label>
-                    <input type="file" name="file" value="<%=img.getFilename()%>">
+                    <input type="file" name="file">
                 </div>
                 
                 <button type="submit" class="btn btn-primary">Upload</button>

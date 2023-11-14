@@ -35,6 +35,7 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import test.model.ImageModel;
 import test.util.Encrypt;
+import test.util.FileUtil;
 import test.util.PasswordHashing;
 
 /**
@@ -104,21 +105,12 @@ public class registerImg extends HttpServlet {
             filePart = req.getPart("file");
             fileName = getFileName(filePart);
             
-                        
-            System.out.println(fileName);
+             
             
             Path p = Paths.get(fileName);
             fileName = p.getFileName().toString();
             savePath = SAVE_DIR + File.separator + fileName;
-            
-            out = new FileOutputStream(new File(savePath));
-            filecontent = filePart.getInputStream();
-
-            final byte[] bytes = new byte[1024];
-
-            while ((read = filecontent.read(bytes)) != -1) {
-                out.write(bytes, 0, read);
-            }
+            FileUtil.saveFile(savePath, filePart.getInputStream());
             
             if ("on".equals(req.getParameter("encrypt"))){
                 keyPassword = req.getParameter("encryptPassword");
@@ -127,16 +119,13 @@ public class registerImg extends HttpServlet {
                 String encryptedPath = SAVE_DIR + File.separator + fileName;
 
                 SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(keySalt));
-                IvParameterSpec iv = (IvParameterSpec) getServletContext().getAttribute("iv");
+                IvParameterSpec iv = Encrypt.generateIv();
                 ivBytes = iv.getIV();
                 
                 Encrypt.encryptFile(key, iv, new File(savePath), new File(encryptedPath));
                 //Encrypt.decryptFile(key, iv, new File(encryptedPath), new File(SAVE_DIR + File.separator + "test"));
                 
-                File originalFile = new File(savePath);
-                if (originalFile.exists()){
-                    originalFile.delete();
-                }
+                FileUtil.deleteFile(savePath);
                 
             } 
             
