@@ -182,14 +182,14 @@ public class modifyImg extends HttpServlet {
             keyPassword = request.getParameter("encryptPasswordNew");
             int imageId = Integer.parseInt(request.getParameter("id"));
             
-            System.out.println("keypassword");
-            System.out.println(keyPassword.equals(""));
-            System.out.println(keyPassword);
+            //System.out.println("keypassword");
+            //System.out.println(keyPassword.equals(""));
+            //System.out.println(keyPassword);
             
             
             // if image was encrypted
-            if (!encryptPasswordCurrent.equals("")) {
-                
+            if (encryptPasswordCurrent != null) {
+                //System.out.println("encryptPasswordCurrentBlock");
                 
                 // get encryption metadata
                 query = "SELECT * FROM Encryption WHERE Encryption.Picture_id = " + imageId;
@@ -228,19 +228,18 @@ public class modifyImg extends HttpServlet {
                         if (keyPassword.equals("")){
                             keyPassword = encryptPasswordCurrent;
                             System.out.println(keyPassword);
-                            saveFileName = updateImage(filePart, connection, imageId, true, true);
+                            saveFileName = updateImage(filePart, connection, imageId, true, true, false);
                         } else {
-                            saveFileName = updateImage(filePart, connection, imageId, true, false);
+                            saveFileName = updateImage(filePart, connection, imageId, true, false, false);
                         }
                     // if user did not provide file
                     } else  {
                         // if user provided new file decrypt file and encrypt it with new password
                         if (!keyPassword.equals("")) {
-                            SecretKey key;
-                            IvParameterSpec iv;
                             
-                            key = Encrypt.getKeyFromPassword(encryptPasswordCurrent, new String(keySalt));
-                            iv = new IvParameterSpec(ivBytes);
+                            
+                            SecretKey key = Encrypt.getKeyFromPassword(encryptPasswordCurrent, new String(keySalt));
+                            IvParameterSpec iv = new IvParameterSpec(ivBytes);
                             
                             // set temp file path
                             String tempFile = SAVE_DIR + File.separator + "temp." + getFileExtension(Paths.get(saveFileName));
@@ -274,9 +273,51 @@ public class modifyImg extends HttpServlet {
                     
                     
                 }
-            } 
+            // if user wants to encrypt image
+            } else if (!keyPassword.equals("")) {
+                // if user provided new file
+                if (!getFileName(filePart).equals("")) {
+                    System.out.println("encrypting new image");
+                    saveFileName = updateImage(filePart, connection, imageId, true, false,true);
+                } else {
+                    keySalt = Encrypt.generateSalt();
+                    System.out.println(keyPassword);
+                    SecretKey key = Encrypt.getKeyFromPassword(keyPassword, new String(keySalt));
+                    IvParameterSpec iv = Encrypt.generateIv();
+                    ivBytes = iv.getIV();
+
+                    // set image path
+                    String filePath = SAVE_DIR + File.separator + saveFileName;
+                    saveFileName = "encrypted-" + saveFileName;
+                    String encryptedPath = SAVE_DIR + File.separator + saveFileName;
+
+                    Encrypt.encryptFile(key, iv, new File(filePath), new File(encryptedPath));
+
+                    FileUtil.deleteFile(filePath);
+
+
+
+                    query = "INSERT INTO encryption(Picture_id, Key_salt, Password_salt, Init_vector, Password_hash) VALUES (?, ?, ?, ?, ?)";
+                    passwordSalt = Encrypt.generateSalt();
+
+                    passwordHash = PasswordHashing.hashPassword(keyPassword, passwordSalt);
+
+                    statement = connection.prepareStatement(query);
+                    statement.setInt(1, imageId);
+                    statement.setBytes(2,keySalt);
+                    statement.setBytes(3, passwordSalt);
+                    statement.setBytes(4, ivBytes);
+                    statement.setBytes(5, passwordHash);
+                    statement.executeUpdate();
+                    statement.close();
+                }
+                
+                
+                
+                
+            }
             // update image metadata
-            query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ?, Filename = ? WHERE id = ?"; 
+            query = "UPDATE Image SET Title = ?, Description = ?, Keywords = ?, Author = ?, Creator = ?, Filename = ?, Encrypted = ? WHERE id = ?"; 
 
             statement = connection.prepareStatement(query);
             statement.setString(1, title);
@@ -285,7 +326,8 @@ public class modifyImg extends HttpServlet {
             statement.setString(4,  author);
             statement.setString(5, creator);
             statement.setString(6,saveFileName);
-            statement.setInt(7, imageId);
+            statement.setBoolean(7,"on".equals(request.getParameter("encrypt")));
+            statement.setInt(8, imageId);
             statement.executeUpdate();
             statement.close();
             connection.close();
@@ -330,7 +372,7 @@ public class modifyImg extends HttpServlet {
     }
     
     // replaces old image, updates encryption parameters and returns new image name
-    private String updateImage(Part filePart, Connection connection, int imageId, boolean encryption, boolean oldPassword) {
+    private String updateImage(Part filePart, Connection connection, int imageId, boolean encryption, boolean oldPassword, boolean firstEncrypt) {
         String newFileName = getFileName(filePart);
         String fileName = null;
         ResultSet rs;
@@ -362,8 +404,7 @@ public class modifyImg extends HttpServlet {
                 SecretKey key;
                 IvParameterSpec iv;
                 if (!oldPassword) {
-                    System.out.println("new password");
-                    System.out.println(keyPassword);
+                    System.out.println("new encryption metadata");
                     keySalt = Encrypt.generateSalt();
                     passwordSalt = Encrypt.generateSalt();
                     iv = Encrypt.generateIv();
@@ -383,7 +424,13 @@ public class modifyImg extends HttpServlet {
                 
                 passwordHash = PasswordHashing.hashPassword(keyPassword, passwordSalt);
                 
-                query = "UPDATE Encryption SET Key_salt = ?, Password_salt = ?, Init_vector = ?, Password_hash = ? WHERE Picture_id = ?";
+                if (firstEncrypt) {
+                    query = "INSERT INTO encryption(Key_salt, Password_salt, Init_vector, Password_hash, Picture_id) VALUES (?, ?, ?, ?, ?)";
+                } else {
+                    query = "UPDATE Encryption SET Key_salt = ?, Password_salt = ?, Init_vector = ?, Password_hash = ? WHERE Picture_id = ?";
+                }
+                
+                
                 
                 statement = connection.prepareStatement(query);
                 statement.setBytes(1,keySalt);
