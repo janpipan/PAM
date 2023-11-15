@@ -85,7 +85,7 @@ public class searchImg extends HttpServlet {
         List<Image> searchList = new ArrayList<>();
         response.setContentType("text/html;charset=UTF-8");
         try {
-            String query;
+            String query = "";
             PreparedStatement statement;
             
             Class.forName("org.apache.derby.jdbc.ClientDriver");
@@ -95,12 +95,50 @@ public class searchImg extends HttpServlet {
                   
             
             // Select information from users and images and show in the web
-            String attribute = (String) request.getParameter("attribute");
-            if (attribute.equals("keywords")) {
-                query = "SELECT * FROM Image WHERE Image." + attribute + " Like '%" + (String) request.getParameter("searchQuery") + "%'";
+            String parameter = (String) request.getParameter("parameter");
+            System.out.println(parameter);
+            //boolean secondParameter = request.getParameter("secondParameter").equals("on");
+            if (request.getParameter("secondParameter") != null) {
+                String parameter2 = (String) request.getParameter("parameter-2");
+                System.out.println(parameter);
+                System.out.println(parameter2);
+                // if first parameter is keyword search and second parameter is date search
+                if ((parameter.equals("keywords") && (parameter2.equals("capturingdate") || parameter2.equals("storagedate")))){
+                    query = "SELECT * FROM Image WHERE Image." + parameter + " Like '%" + (String) request.getParameter("searchQuery") + "%' AND Image." + parameter2 + "= '" + (String) request.getParameter("searchDate-2") + "'";
+                // if first parameter is title/author/creator and second parameter is date search
+                } else if (!parameter.equals("keywords") && !(parameter.equals("capturingdate") || parameter.equals("storagedate")) && (parameter2.equals("capturingdate") || parameter2.equals("storagedate"))) {
+                    query = "SELECT * FROM Image WHERE Image." + parameter + "= '" + (String) request.getParameter("searchQuery") + "' AND Image." + parameter2 + "= '" + (String) request.getParameter("searchDate-2") + "'";
+                // if first parameter is date search and second parameter is keyword search
+                } else if ((parameter.equals("capturingdate") || parameter.equals("storagedate")) && parameter2.equals("keywords")) {
+                    query = "SELECT * FROM Image WHERE Image." + parameter2 + " Like '%" + (String) request.getParameter("searchQuery-2") + "%' AND Image." + parameter + "= '" + (String) request.getParameter("searchDate") + "'";
+                // if second parameter is title/author/creator and first parameter is date search
+                } else if (!parameter2.equals("keywords") && !(parameter2.equals("capturingdate") || parameter2.equals("storagedate")) && (parameter.equals("capturingdate") || parameter.equals("storagedate"))) {
+                    query = "SELECT * FROM Image WHERE Image." + parameter2 + "= '" + (String) request.getParameter("searchQuery-2") + "' AND Image." + parameter + "= '" + (String) request.getParameter("searchDate") + "'";
+                // if first and second parameters are date searches
+                } else if ((parameter.equals("capturingdate") || parameter.equals("storagedate")) && (parameter2.equals("capturingdate") || parameter2.equals("storagedate"))) {
+                    query = "SELECT * FROM Image WHERE Image." + parameter + "= '" + (String) request.getParameter("searchDate") + "' AND Image." + parameter2 + "= '" + (String) request.getParameter("searchDate-2") + "'";
+                // if first and second parameters are keyword searches
+                } else if (parameter.equals("keywords") && parameter2.equals("keywords")){
+                    query = "SELECT * FROM Image WHERE Image." + parameter + " Like '%" + (String) request.getParameter("searchQuery") + "%' AND Image." + parameter2 + " Like '%" + (String) request.getParameter("searchQuery-2") + "'" ;
+                // if first and second parameters are title/author/creator search
+                } else {
+                    query = "SELECT * FROM Image WHERE Image." + parameter + " = '" + (String) request.getParameter("searchQuery") + "' AND Image." + parameter2 + "= '" + (String) request.getParameter("searchQuery-2")  + "'";
+                }
             } else {
-                query = "SELECT * FROM Image WHERE Image." + attribute + " = '" + (String) request.getParameter("searchQuery") + "'";
+                switch (parameter) {
+                    case "keywords":
+                        query = "SELECT * FROM Image WHERE Image." + parameter + " Like '%" + (String) request.getParameter("searchQuery") + "%'";
+                        break;
+                    case "capturingdate":
+                    case "storagedate":
+                        query = "SELECT * FROM Image WHERE Image." + parameter + "= '" + (String) request.getParameter("searchDate") + "'";
+                        break;
+                    default:
+                        query = "SELECT * FROM Image WHERE Image." + parameter + " = '" + (String) request.getParameter("searchQuery") + "'";
+                        break;
+                }
             }
+            
             
             System.out.println(query);
             statement = connection.prepareStatement(query);

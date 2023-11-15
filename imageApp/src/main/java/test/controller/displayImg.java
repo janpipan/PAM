@@ -149,7 +149,6 @@ public class displayImg extends HttpServlet {
                         }
                     }
                     // delete temp img
-                    /*
                     try {
                         Path path = Paths.get(SAVE_DIR + File.separator + "temp.jpg");
                         Files.delete(path);
@@ -157,7 +156,6 @@ public class displayImg extends HttpServlet {
                     } catch (IOException e) {
                         System.err.println("Unable to delete the file:" + e.getMessage());
                     }
-                    */
                 } else {
                     response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Incorrect password");
                 }

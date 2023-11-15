@@ -13,7 +13,7 @@
     <head>
         <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-        <title>JSP Page</title>
+        <title>Image app</title>
     </head>
     <body>
         <nav class="navbar navbar-expand-lg navbar-light bg-light">
@@ -35,6 +35,11 @@
                 </ul>
             </div>
         </nav>
+        <div class="container mt-4">
+            <div class="text-center">
+                <h1>Modify image</h1>
+            </div>
+        </div>
         <%
             List<Image> imgList =  (List<Image>) request.getSession().getAttribute("imgList");
             Format formatter = new SimpleDateFormat("yyyy-MM-dd");
