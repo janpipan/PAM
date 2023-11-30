@@ -13,7 +13,11 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import test.entity.Image;
 
 /**
  *
@@ -38,6 +42,40 @@ public class JakartaEE91Resource {
     @Produces(MediaType.TEXT_HTML)
     public String listImages () 
     {                              
+        Connection connection = null;
+        List<Image> searchList = new ArrayList<>();
+        
+        try {
+            String query = "SELECT * FROM Image";
+            PreparedStatement statement;
+            
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            // create a database connection
+            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
+            
+            statement = connection.prepareStatement(query);
+            ResultSet rs = statement.executeQuery();  
+            
+            
+            while (rs.next()){
+                Integer id = rs.getInt("id");
+                String title = rs.getString("title");
+                String description = rs.getString("description");
+                String keywords = rs.getString("keywords");
+                String author = rs.getString("author");
+                String creator = rs.getString("creator");
+                java.util.Date capturingdate = rs.getDate("capturingdate");
+                java.util.Date storagedate = rs.getDate("storagedate");
+                String filename = rs.getString("filename");
+                Boolean encrypted = rs.getBoolean("encrypted");
+                Image img = new Image(id, title, description, keywords, author, creator, capturingdate, storagedate, filename, encrypted);
+                searchList.add(img);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         return "<html><body>LIST</body></html>";
     }   
 
