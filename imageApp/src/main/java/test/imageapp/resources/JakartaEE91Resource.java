@@ -7,6 +7,7 @@ import jakarta.ws.rs.POST;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.PathParam;
 import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.QueryParam;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import java.sql.Connection;
@@ -170,6 +171,78 @@ public class JakartaEE91Resource {
 
         
         
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+    
+    /**
+    * GET method to search images 
+    * @param title 
+    * @param description
+    * @return
+    */
+    @Path("search")
+    @GET
+    @Produces(MediaType.TEXT_HTML)
+    public String search (@QueryParam("title") String title, @QueryParam("description") String description) {
+        Connection connection = null;
+        List<Image> searchList = new ArrayList<>();
+        
+        try {
+            String query = "SELECT * FROM Image WHERE Image.title = ? AND Image.description LIKE ?";
+            PreparedStatement statement;
+            
+            Class.forName("org.apache.derby.jdbc.ClientDriver");
+
+            // create a database connection
+            connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
+            
+            statement = connection.prepareStatement(query);
+            statement.setString(1, title);
+            statement.setString(2, description);
+            ResultSet rs = statement.executeQuery();  
+            
+            
+            while (rs.next()){
+                Integer id = rs.getInt("id");
+                String imageTitle = rs.getString("title");
+                String imageDescription = rs.getString("description");
+                String keywords = rs.getString("keywords");
+                String author = rs.getString("author");
+                String creator = rs.getString("creator");
+                java.util.Date capturingdate = rs.getDate("capturingdate");
+                java.util.Date storagedate = rs.getDate("storagedate");
+                String filename = rs.getString("filename");
+                Boolean encrypted = rs.getBoolean("encrypted");
+                Image img = new Image(id, imageTitle, imageDescription, keywords, author, creator, capturingdate, storagedate, filename, encrypted);
+                searchList.add(img);
+            }
+            
+            StringBuilder htmlResponse = new StringBuilder("<html><body><h1>List of Images</h1><table border=\"1\">" +
+                                                        "<tr><th>ID</th><th>Title</th><th>description</th><th>keywords</th><th>author</th><th>creator</th><th>capturingdate</th><th>storagedate</th><th>filename</th><th>encrypted</th>" +
+                                                        "</tr>");
+                   
+        for (Image img : searchList) {
+            htmlResponse.append("<tr>")
+                        .append("<td>").append(img.getId()).append("</td>")
+                        .append("<td>").append(img.getTitle()).append("</td>")
+                        .append("<td>").append(img.getDescription()).append("</td>")
+                        .append("<td>").append(img.getKeywords()).append("</td>")
+                        .append("<td>").append(img.getAuthor()).append("</td>")
+                        .append("<td>").append(img.getCreator()).append("</td>")
+                        .append("<td>").append(img.getCapturingdate()).append("</td>")
+                        .append("<td>").append(img.getStoragedate()).append("</td>")
+                        .append("<td>").append(img.getFilename()).append("</td>")
+                        .append("<td>").append(img.getEncrypted()).append("</td>")
+                        .append("</tr>");
+        }
+
+        htmlResponse.append("</table></body></html>");
+
+        return htmlResponse.toString();
+            
         } catch (Exception e) {
             e.printStackTrace();
         }
