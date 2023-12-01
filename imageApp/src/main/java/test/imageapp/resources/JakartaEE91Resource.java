@@ -187,7 +187,7 @@ public class JakartaEE91Resource {
     public String searchByTitle (@PathParam("title") String title) 
     {     
         Connection connection = null;
-        Image img = null;
+        List<Image> searchList = new ArrayList<>();
         
         try {
             String query = "SELECT * FROM Image WHERE Image.title = ?";
@@ -199,7 +199,7 @@ public class JakartaEE91Resource {
             connection = DriverManager.getConnection("jdbc:derby://localhost:1527/ImageDB;user=alumne;password=alumne");
             
             statement = connection.prepareStatement(query);
-            statement.setString(1,title);
+            statement.setString(1, title);
             ResultSet rs = statement.executeQuery();  
             
             
@@ -214,15 +214,16 @@ public class JakartaEE91Resource {
                 java.util.Date storagedate = rs.getDate("storagedate");
                 String filename = rs.getString("filename");
                 Boolean encrypted = rs.getBoolean("encrypted");
-                img = new Image(id, imageTitle, description, keywords, author, creator, capturingdate, storagedate, filename, encrypted);
+                Image img = new Image(id, imageTitle, description, keywords, author, creator, capturingdate, storagedate, filename, encrypted);
+                searchList.add(img);
             }
             
-            
-            if(img != null) {
-                StringBuilder htmlResponse = new StringBuilder("<html><body><h1>List of Images</h1><table border=\"1\">" +
+            StringBuilder htmlResponse = new StringBuilder("<html><body><h1>List of Images</h1><table border=\"1\">" +
                                                         "<tr><th>ID</th><th>Title</th><th>description</th><th>keywords</th><th>author</th><th>creator</th><th>capturingdate</th><th>storagedate</th><th>filename</th><th>encrypted</th>" +
                                                         "</tr>");
-                htmlResponse.append("<tr>")
+                   
+        for (Image img : searchList) {
+            htmlResponse.append("<tr>")
                         .append("<td>").append(img.getId()).append("</td>")
                         .append("<td>").append(img.getTitle()).append("</td>")
                         .append("<td>").append(img.getDescription()).append("</td>")
@@ -234,17 +235,12 @@ public class JakartaEE91Resource {
                         .append("<td>").append(img.getFilename()).append("</td>")
                         .append("<td>").append(img.getEncrypted()).append("</td>")
                         .append("</tr>");
-                htmlResponse.append("</table></body></html>");
+        }
 
-                return htmlResponse.toString();
-            } else {
-                return "<html><body>ERROR</body></html>";
-            }
+        htmlResponse.append("</table></body></html>");
+
+        return htmlResponse.toString();
             
-        
-
-        
-        
         } catch (Exception e) {
             e.printStackTrace();
         }
